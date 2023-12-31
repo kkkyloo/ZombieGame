@@ -1,6 +1,4 @@
 using UnityEngine;
-using System;
-
 public class MovePlayer : MonoBehaviour
 {
     [Header("Movement")]
@@ -29,18 +27,12 @@ public class MovePlayer : MonoBehaviour
     private bool _isReadyToJump;
     private bool _isGrounded;
     private bool _isJumpPress = false;
-
-
- //   public static float Action onMove(float _horizontalInput);
-
-
     private void Awake()
     {
         _rigidBody = GetComponent<Rigidbody>();
         _rigidBody.freezeRotation = true;
         _isReadyToJump = true;
     }
-
     private void FixedUpdate()
     {
         _isGrounded = Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _ground);
@@ -48,20 +40,16 @@ public class MovePlayer : MonoBehaviour
         MyInput();
         SpeedControl();
 
-        if (_isGrounded)
-            _rigidBody.drag = _groundDrag;
-        else
-            _rigidBody.drag = 0;
+        if (_isGrounded) _rigidBody.drag = _groundDrag;
+        else _rigidBody.drag = 0;
 
         Move();
     }
-
     private void MyInput()
     {
-
         _horizontalInput = Input.GetAxisRaw("Horizontal");
         _verticalInput = Input.GetAxisRaw("Vertical");
- 
+
         if (_isJumpPress && _isReadyToJump && _isGrounded)
         {
             _isReadyToJump = false;
@@ -71,16 +59,11 @@ public class MovePlayer : MonoBehaviour
             Invoke(nameof(ResetJump), _jumpCooldown);
         }
     }
-
     private void Move()
     {
-
-        
-
         _moveDirection = _orientation.forward * _verticalInput + _orientation.right * _horizontalInput;
         if (OnSlope() && !_isExitingSlope)
         {
-            
             _rigidBody.AddForce(GetSlopeMoveDirection() * _moveSpeed * 20f, ForceMode.Force);
 
             if (_rigidBody.velocity.y > 0)
@@ -93,12 +76,8 @@ public class MovePlayer : MonoBehaviour
             Actions.OnMove(_horizontalInput, _verticalInput);
         }
 
-        else if (!_isGrounded)
-        {
-            _rigidBody.AddForce(_moveDirection.normalized * _moveSpeed * 10f * _airMultiplier, ForceMode.Force);
-        }
+        else if (!_isGrounded) _rigidBody.AddForce(_moveDirection.normalized * _moveSpeed * 10f * _airMultiplier, ForceMode.Force);
     }
-
     private void SpeedControl()
     {
         Vector3 flatVel = new Vector3(_rigidBody.velocity.x, 0f, _rigidBody.velocity.z);
@@ -109,22 +88,18 @@ public class MovePlayer : MonoBehaviour
             _rigidBody.velocity = new Vector3(limitedVel.x, _rigidBody.velocity.y, limitedVel.z);
         }
     }
-
     private void Jump()
     {
         _rigidBody.velocity = new Vector3(_rigidBody.velocity.x, 0f, _rigidBody.velocity.z);
         _rigidBody.AddForce(transform.up * _jumpForce, ForceMode.Impulse);
     }
-
     public void OnJumpButtonDown() => _isJumpPress = true;
     public void OnJumpButtonUp() => _isJumpPress = false;
     private void ResetJump() => _isReadyToJump = true;
-
     private Vector3 GetSlopeMoveDirection()
     {
         return Vector3.ProjectOnPlane(_moveDirection, _slopeHit.normal.normalized);
     }
-
     private bool OnSlope()
     {
         if (Physics.Raycast(transform.position, Vector3.down, out _slopeHit, _playerHeight * 0.5f + 0.3f))
@@ -132,7 +107,6 @@ public class MovePlayer : MonoBehaviour
             float angle = Vector3.Angle(Vector3.up, _slopeHit.normal);
             return angle < _maxSlopeAngle && angle != 0;
         }
-
         return false;
     }
 }

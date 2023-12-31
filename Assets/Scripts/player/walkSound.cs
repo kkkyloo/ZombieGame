@@ -1,41 +1,17 @@
 using UnityEngine;
-
-public class walkSound : MonoBehaviour
+public class WalkSound : MonoBehaviour
 {
-    private AudioSource sound;
-    private bool isgrounded;
-
-    void Start()
+    private AudioSource _sound;
+    private void OnEnable() => Actions.OnMove += PlaySound;
+    private void OnDisable() => Actions.OnMove -= PlaySound;
+    private void Awake() => _sound = GetComponent<AudioSource>();
+    private void PlaySound(float horizontalInput, float verticalInput)
     {
-        sound = GetComponent<AudioSource>();
-        
-    }
-
-    void Update()
-    {
-        if (Mathf.Abs(PlayerMovement.horizontalInput) > 0 || Mathf.Abs(PlayerMovement.verticalInput) > 0 && !PlayerMovement.jumpPress)
+        if (Mathf.Abs(horizontalInput) > 0 || Mathf.Abs(verticalInput) > 0)
         {
-            sound.pitch = Random.Range(0.8f, 1.1f);
-            sound.enabled = true;
+            _sound.pitch = Random.Range(0.8f, 1.1f);
+            _sound.enabled = true;
         }
-        else
-            sound.enabled = false;
+        else _sound.enabled = false;
     }
-
-  /*  void OnCollisionEnter(Collision theCollision)
-    {
-        if (theCollision.gameObject.tag == "floor")
-        {
-            isgrounded = true;
-        }
-    }
-
-    void OnCollisionExit(Collision theCollision)
-    {
-        if (theCollision.gameObject.tag == "floor")
-        {
-            isgrounded = false;
-        }
-    }
-  */
-}
+} 
