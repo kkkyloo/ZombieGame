@@ -1,27 +1,28 @@
-using Unity.Burst.CompilerServices;
 using UnityEngine;
 
-public class gunsScript : MonoBehaviour
+public class GunsScript : MonoBehaviour
 {
     [SerializeField]
     private float damage = 51f;
-    [SerializeField] private float attackDelay = 1.8f;
+    [SerializeField]
+    private float attackDelay = 1.8f;
 
-    private string currentAnimaton;
+    private string currentAnimation;
     private Animator animator;
 
-    private string IDLE;
-    private string FIRE;
-    //private string FIRE2;
+    private string idleAnimation;
+    private string fireAnimation;
 
-    private bool isAttackPressed; 
+    private bool isAttackPressed;
     private bool isAttacking;
 
-    [SerializeField] private AudioClip impact;
+    [SerializeField]
+    private AudioClip impact;
 
-    private AudioSource Sound;
-    [SerializeField] private GameObject prefab; 
-    bool Issound = true;
+    private AudioSource sound;
+    [SerializeField]
+    private GameObject prefab;
+    private bool isSoundEnabled = true;
 
     void Awake()
     {
@@ -29,20 +30,21 @@ public class gunsScript : MonoBehaviour
 
         AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
 
-        IDLE = clips[0].name.ToString();
-        FIRE = clips[1].name.ToString();
-        //FIRE2 = clips[2].name.ToString();
-        Sound = GetComponent<AudioSource>();
+        idleAnimation = clips[0].name;
+        fireAnimation = clips[1].name;
+
+        sound = GetComponent<AudioSource>();
     }
 
     private void OnEnable()
     {
-        ChangeAnimationState(IDLE); 
+        ChangeAnimationState(idleAnimation);
     }
 
     void Update()
     {
-        if (PlayerCam.fire == true && GameObject.FindGameObjectWithTag("axeArms").activeSelf && this.animator.GetCurrentAnimatorStateInfo(0).IsName("AxeIDLE"))
+        if (PlayerCam.fire && GameObject.FindGameObjectWithTag("axeArms").activeSelf &&
+            animator.GetCurrentAnimatorStateInfo(0).IsName("AxeIDLE"))
         {
             isAttackPressed = true;
         }
@@ -50,77 +52,61 @@ public class gunsScript : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isAttackPressed )
+        if (isAttackPressed)
         {
             isAttackPressed = false;
-            if(Issound)
+
+            if (isSoundEnabled)
             {
-                Sound.PlayOneShot(impact, 0.7F);
-                Issound = false;
+                sound.PlayOneShot(impact, 0.7F);
+                isSoundEnabled = false;
             }
-                
 
             if (!isAttacking)
             {
                 isAttacking = true;
-                //int x = Random.Range(-1, 1);
-                //if (x == 0)
-                //{ 
-                ChangeAnimationState(FIRE);
-                    //attackDelay = 1.8f;
-                    //damage = 60f;
+                ChangeAnimationState(fireAnimation);
                 GetComponent<Collider>().enabled = true;
 
-                //}
-                //if (x == -1)
-                //{
-                //    ChangeAnimationState(FIRE2);
-                //    attackDelay = 1f;
-                //     damage = 40f;
-                // }
-
-                //attackDelay = animator.GetCurrentAnimatorStateInfo(0).length;
                 Invoke("AttackComplete", attackDelay);
                 Invoke("DamageTrigger", 0.8f);
-
-
             }
         }
+
         if (!isAttacking)
-            ChangeAnimationState(IDLE);
+            ChangeAnimationState(idleAnimation);
     }
 
     void ChangeAnimationState(string newAnimation)
     {
-        if (currentAnimaton == newAnimation) return;
+        if (currentAnimation == newAnimation) return;
 
         animator.Play(newAnimation);
-        currentAnimaton = newAnimation;
+        currentAnimation = newAnimation;
     }
 
     void DamageTrigger()
     {
         GetComponent<Collider>().enabled = false;
     }
+
     void AttackComplete()
     {
-        Issound = true;
+        isSoundEnabled = true;
         isAttacking = false;
-        
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Zombie")
+        if (other.CompareTag("Zombie"))
         {
             Destroy(Instantiate(prefab, other.transform.position, Quaternion.identity), 0.5f);
             other.gameObject.GetComponent<Targets>().TakeDamage(damage);
         }
-   
     }
 
     private void DamageSound()
     {
-        
+        // Implement if needed
     }
 }

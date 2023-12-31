@@ -1,61 +1,31 @@
 using UnityEngine;
-
-public class boop : MonoBehaviour
+public class Boop : MonoBehaviour
 {
     [Range(0.001f, 0.01f)]
-    public float Amount = 0.002f;
+    [SerializeField] private float _amount = 0.002f;
     [Range(1f, 30f)]
-
-    public float Freq = 10.0f;
+    [SerializeField] private float _freq = 10.0f;
     [Range(10f, 100f)]
-    public float Smooth = 10.0f;
+    [SerializeField] private float _smooth = 10.0f;
 
-    Vector3 StartPos;
-
-    void Start()
+    private Vector3 _startPos;
+    private Vector2 _inputMagnitude = Vector2.zero;
+    private void OnEnable() => Actions.OnMove += CheckForHeadbobTrigger;
+    private void OnDisable() => Actions.OnMove -= CheckForHeadbobTrigger;
+    private void Awake() => _startPos = transform.localPosition;
+    void Update() 
     {
-        StartPos = transform.localPosition;
+        if (Vector3.Distance(transform.localPosition, _startPos) > 0.01f) StopHeadBob();
+        if (_inputMagnitude.magnitude > 0) StartHeadBob();
     }
-
-    void Update()
-    {
-
-        CheckForHeadbobTriger();
-        StopHeadBob();
-    }
-
-    private void CheckForHeadbobTriger()
-    {
-        float inputMagnitude = new Vector3(Mathf.Abs(PlayerMovement.horizontalInput), 0, Mathf.Abs(PlayerMovement.verticalInput)).magnitude;
-
-        if (inputMagnitude >0)
-            StartHeadBob();
-    }
-
-    private Vector3 StartHeadBob()
+    private void StopHeadBob() => transform.localPosition = Vector3.Lerp(transform.localPosition, _startPos, _smooth * Time.deltaTime);
+    private void CheckForHeadbobTrigger(float horizontalInput, float verticalInput) => _inputMagnitude = new Vector2(Mathf.Abs(horizontalInput), Mathf.Abs(verticalInput));
+    private void StartHeadBob()
     {
         Vector3 pos = Vector3.zero;
-        pos.y += Mathf.Lerp(pos.y, Mathf.Sin(Time.time * Freq) * Amount * 1.4f, Smooth * Time.deltaTime);
-        pos.x += Mathf.Lerp(pos.y, Mathf.Cos(Time.time * Freq / 2) * Amount * 1.6f, Smooth * Time.deltaTime);
+        pos.y = Mathf.Sin(Time.time * _freq) * _amount * 1.4f;
+        pos.x = Mathf.Cos(Time.time * _freq / 2) * _amount * 1.6f;
 
-        transform.localPosition += pos;
-        return pos;
-
+        transform.localPosition += pos * _smooth * Time.deltaTime;
     }
-
-    private void StopHeadBob()
-    {
-        if(transform.localPosition == StartPos) return;
-        transform.localPosition = Vector3.Lerp(transform.localPosition, StartPos, 1 * Time.deltaTime);
-    }
-    
-
-
-
-
-
-
-
-
-
 }

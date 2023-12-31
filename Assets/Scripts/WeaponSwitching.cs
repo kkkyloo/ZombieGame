@@ -9,16 +9,15 @@ public class WeaponSwitching : MonoBehaviour
         SelectWeapon();
     }
 
-
-    
     public void AxeDown()
     {
-        if(!Ak47.isReloading || !shotgun.isReloading)
+        if (!Ak47.isReloading || !shotgun.isReloading)
         {
             selectedWeapon = 0;
             SelectWeapon();
         }
     }
+
     public void AkDown()
     {
         if (!Ak47.isReloading || !shotgun.isReloading)
@@ -26,9 +25,8 @@ public class WeaponSwitching : MonoBehaviour
             selectedWeapon = 1;
             SelectWeapon();
         }
-
-
     }
+
     public void ShootGunDown()
     {
         if (!Ak47.isReloading || !shotgun.isReloading)

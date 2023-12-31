@@ -1,9 +1,10 @@
 using System.Collections;
 using UnityEngine;
+
 public class PlayerCam : MonoBehaviour
 {
-    [SerializeField] private float sensX;
-    [SerializeField] private float sensY;
+   // [SerializeField] private float sensXJoy;
+  //  [SerializeField] private float sensYJoy;
 
     [SerializeField] private Transform orientation;
 
@@ -22,10 +23,22 @@ public class PlayerCam : MonoBehaviour
 
     public static bool fire = false;
 
+    public float sensitivity = 2.0f; // „увствительность движени€ мыши
+    public float smoothing = 2.0f;   // —глаживание движени€
+
+    private float rotationX = 0.0f;  // ѕеременна€ дл€ хранени€ поворота по оси X
+    private float rotationY = 0.0f;  // ѕеременна€ дл€ хранени€ поворота по оси Y
+    private Vector2 smoothV;
+
+
+
+
+
+
     private void Start()
     {
-        //Cursor.lockState = CursorLockMode.Locked;
-        //Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     public void fireJoyDown()
@@ -64,27 +77,33 @@ public class PlayerCam : MonoBehaviour
     private void Update()
     {
 
-         mouseX = SimpleInput.GetAxis("Panel X") * Time.deltaTime * sensX * sens;
-         mouseY = SimpleInput.GetAxis("Panel Y") * Time.deltaTime * sensY * sens;         
-        
+        // mouseX = SimpleInput.GetAxis("Panel X") * Time.deltaTime * sensXJoy * sens;
+        //  mouseY = SimpleInput.GetAxis("Panel Y") * Time.deltaTime * sensYJoy * sens;
 
-        
-        if(fireJoy)
-        {
-            mouseX = SimpleInput.GetAxis("fire X") * Time.deltaTime * sensX * sens;
-            mouseY = SimpleInput.GetAxis("fire Y") * Time.deltaTime * sensY * sens;
-        }        
-        if(jumpJoy)
-        {
-            mouseX = SimpleInput.GetAxis("jump X") * Time.deltaTime * sensX * sens;
-            mouseY = SimpleInput.GetAxis("jump Y") * Time.deltaTime * sensY * sens;
-        }
+        var mouseDelta = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
+
+        // ѕримен€ем чувствительность и сглаживание
+        mouseDelta = Vector2.Scale(mouseDelta, new Vector2(sensitivity * smoothing, sensitivity * smoothing));
+        smoothV.x = Mathf.Lerp(smoothV.x, mouseDelta.x, 1f / smoothing);
+        smoothV.y = Mathf.Lerp(smoothV.y, mouseDelta.y, 1f / smoothing);
 
 
+    //    if (fireJoy)
+     //   {
+    //        mouseX = SimpleInput.GetAxis("fire X") * Time.deltaTime * sensXJoy * sens;
+    //        mouseY = SimpleInput.GetAxis("fire Y") * Time.deltaTime * sensYJoy * sens;
+   //     }        
+   //     if(jumpJoy)
+   //     {
+   //         mouseX = SimpleInput.GetAxis("jump X") * Time.deltaTime * sensXJoy * sens;
+   //         mouseY = SimpleInput.GetAxis("jump Y") * Time.deltaTime * sensYJoy * sens;
+   //     }
 
-        yRotation += mouseX;
 
-        xRotation -= mouseY;
+
+        yRotation += smoothV.x;
+
+        xRotation -= smoothV.y; 
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
         transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
@@ -102,13 +121,13 @@ public class PlayerCam : MonoBehaviour
             StartCoroutine(TestCoroutine2());
 
         }
-        if (PlayerMovement.horizontalInput < 0) // сделать поле дл€ изменени€ и починить баг при стрельбе не работает
+        if (PlayerMovement.horizontalInput < 0) // сделать поле дл€ изменени€ и починить баг при стрельбе не работает и сделать плавное смещение камеры
         {
-            transform.rotation = Quaternion.Euler(xRotation, yRotation, 2f);
+            transform.rotation = Quaternion.Euler(xRotation, yRotation, 1f);
         }
         if (PlayerMovement.horizontalInput > 0)
         {
-            transform.rotation = Quaternion.Euler(xRotation, yRotation, -2f);
+            transform.rotation = Quaternion.Euler(xRotation, yRotation, -1f);
         }
 
 

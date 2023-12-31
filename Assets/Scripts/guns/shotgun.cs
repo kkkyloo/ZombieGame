@@ -4,16 +4,18 @@ using System.Collections;
 
 public class shotgun : MonoBehaviour
 {
+    [Header("Gun Settings")]
     [SerializeField] private float damage = 51f;
     [SerializeField] private float attackDelay = 0.1f;
     [SerializeField] private float range = 60;
     [SerializeField] private ParticleSystem flash;
     [SerializeField] private AudioClip impact;
+    [SerializeField] private AudioClip reload;
 
     [SerializeField] public static int MaxAmmo = 12;
     [SerializeField] public static int currentAmmo = 3;
 
-    private AudioSource akSound;
+    private AudioSource shotgunSound;
 
     private float startPosX;
     private float startPosY;
@@ -21,7 +23,7 @@ public class shotgun : MonoBehaviour
     private Camera fpsCam;
 
     public static Animator animator;
-    private string currentAnimaton;
+    private string currentAnimation;
     public static string IDLE;
     private string FIRE;
     private string enableRUN;
@@ -45,12 +47,11 @@ public class shotgun : MonoBehaviour
     public static bool isReloading = false;
 
     private bool readyToShoot = true;
-    [SerializeField] private AudioClip reload;
 
     private void Start()
     {
         animator = GetComponent<Animator>();
-        akSound = GetComponent<AudioSource>();
+        shotgunSound = GetComponent<AudioSource>();
         fpsCam = GameObject.Find("PlayerCam").GetComponent<Camera>();
 
         AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
@@ -59,15 +60,11 @@ public class shotgun : MonoBehaviour
         FIRE = clips[3].name.ToString();
         enableRUN = clips[1].name.ToString();
         disableRUN = clips[2].name.ToString();
-
         reloadAnim = clips[4].name.ToString();
 
         ammoText = GameObject.Find("ammoSG").GetComponent<TextMeshProUGUI>();
         player = GameObject.Find("Player");
-
     }
-
-
 
     private void OnEnable()
     {
@@ -81,7 +78,6 @@ public class shotgun : MonoBehaviour
             return;
         }
 
-
         if (currentAmmo == 0 && MaxAmmo > 0 && currentAmmo != 3)
         {
             StartCoroutine(ReloadGun());
@@ -89,7 +85,7 @@ public class shotgun : MonoBehaviour
             return;
         }
 
-        if (PlayerCam.fire == true && currentAmmo > 0 && readyToShoot)
+        if (PlayerCam.fire && currentAmmo > 0 && readyToShoot)
         {
             isAttackPressed = true;
             startPosX = player.transform.position.x;
@@ -98,11 +94,8 @@ public class shotgun : MonoBehaviour
             readyToShoot = false;
         }
 
-
-
         if (Mathf.Abs(PlayerMovement.horizontalInput) > 0 || Mathf.Abs(PlayerMovement.verticalInput) > 0)
         {
-
             isRunning = true;
             secundomer += Time.deltaTime;
         }
@@ -116,18 +109,16 @@ public class shotgun : MonoBehaviour
 
     IEnumerator ReloadGun()
     {
-        akSound.PlayOneShot(reload, 1F);
+        shotgunSound.PlayOneShot(reload, 1F);
         ChangeAnimationState(reloadAnim);
 
         yield return new WaitForSeconds(2);
-
 
         int amountToWithdraw = Mathf.Min(3 - currentAmmo, MaxAmmo);
         MaxAmmo -= amountToWithdraw;
         currentAmmo += amountToWithdraw;
 
-
-        ammoText.text = currentAmmo + " / " + MaxAmmo;
+        ammoText.text = $"{currentAmmo} / {MaxAmmo}";
 
         isReloading = false;
         ChangeAnimationState(IDLE);
@@ -140,95 +131,13 @@ public class shotgun : MonoBehaviour
             StartCoroutine(ReloadGun());
             isReloading = true;
         }
-
     }
 
     private void FixedUpdate()
     {
         if (isAttackPressed)
         {
-
-            flash.Play();
-            isAttackPressed = false;
-
-            if (!isAttacking)
-            {
-                isAttacking = true;
-
-                ChangeAnimationState(FIRE);
-
-                Invoke("AttackComplete", attackDelay);
-                akSound.PlayOneShot(impact, 0.7F);
-
-
-
-                currentAmmo--;
-
-                ammoText.text = currentAmmo + " / " + MaxAmmo;
-
-                RaycastHit hit;
-
-                if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, 5))
-                {
-                    Targets targets = hit.transform.GetComponent<Targets>();
-
-
-                    if (targets != null)
-                    {
-                        // targets.transform.Rotate(1000,1000,1000, Space.Self);
-                        run.speed = 4;
-                        targets.TakeDamage(70);
-                        //Destroy(Instantiate(_prefab, hit.point, Quaternion.identity), 2.5f);
-                    }
-                    else
-                    {
-                        GameObject obj = Instantiate(_bulletHolePrefab, hit.point, Quaternion.LookRotation(hit.normal));
-                        obj.transform.position += obj.transform.forward / 1000;
-                        Destroy(obj, 4f);
-                    }
-                }
-
-                else if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, 20))
-                {
-                    Targets targets = hit.transform.GetComponent<Targets>();
-
-
-                    if (targets != null)
-                    {
-                        // targets.transform.Rotate(1000,1000,1000, Space.Self);
-                        run.speed = 4;
-                        targets.TakeDamage(30);
-                        //Destroy(Instantiate(_prefab, hit.point, Quaternion.identity), 2.5f);
-                    }
-                    else
-                    {
-                        GameObject obj = Instantiate(_bulletHolePrefab, hit.point, Quaternion.LookRotation(hit.normal));
-                        obj.transform.position += obj.transform.forward / 1000;
-                        Destroy(obj, 4f);
-                    }
-                }
-                else if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, 60))
-                {
-                    Targets targets = hit.transform.GetComponent<Targets>();
-
-
-                    if (targets != null)
-                    {
-                        // targets.transform.Rotate(1000,1000,1000, Space.Self);
-                        run.speed = 4;
-                        targets.TakeDamage(10);
-                        //Destroy(Instantiate(_prefab, hit.point, Quaternion.identity), 2.5f);
-                    }
-                    else
-                    {
-                        GameObject obj = Instantiate(_bulletHolePrefab, hit.point, Quaternion.LookRotation(hit.normal));
-                        obj.transform.position += obj.transform.forward / 1000;
-                        Destroy(obj, 4f);
-                    }
-                }
-
-
-            }
+            HandleAttack();
         }
         else if (!isAttacking && !isRunning && player.transform.position.x == startPosX && !isReloading)
         {
@@ -243,15 +152,14 @@ public class shotgun : MonoBehaviour
         {
             ChangeAnimationState(disableRUN);
         }
-
     }
 
     private void ChangeAnimationState(string newAnimation)
     {
-        if (currentAnimaton == newAnimation) return;
+        if (currentAnimation == newAnimation) return;
 
         animator.Play(newAnimation);
-        currentAnimaton = newAnimation;
+        currentAnimation = newAnimation;
     }
 
     private void AttackComplete()
@@ -260,5 +168,56 @@ public class shotgun : MonoBehaviour
         animComplite = true;
         run.speed = 6;
         readyToShoot = true;
+    }
+
+    private void HandleAttack()
+    {
+        flash.Play();
+        isAttackPressed = false;
+
+        if (!isAttacking)
+        {
+            isAttacking = true;
+
+            ChangeAnimationState(FIRE);
+
+            Invoke("AttackComplete", attackDelay);
+            shotgunSound.PlayOneShot(impact, 0.7F);
+
+            currentAmmo--;
+
+            ammoText.text = $"{currentAmmo} / {MaxAmmo}";
+
+            RaycastHit hit;
+
+            float damageMultiplier = 1f;
+
+            if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, 60))
+            {
+                Targets targets = hit.transform.GetComponent<Targets>();
+
+                if (targets != null)
+                {
+                    run.speed = 4;
+                    targets.TakeDamage(GetDamageByRange(hit.distance) * damageMultiplier);
+                }
+                else
+                {
+                    GameObject obj = Instantiate(_bulletHolePrefab, hit.point, Quaternion.LookRotation(hit.normal));
+                    obj.transform.position += obj.transform.forward / 1000;
+                    Destroy(obj, 4f);
+                }
+            }
+        }
+    }
+
+    private int GetDamageByRange(float distance)
+    {
+        if (distance <= 5)
+            return 70;
+        else if (distance <= 20)
+            return 30;
+        else
+            return 10;
     }
 }

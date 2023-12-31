@@ -4,26 +4,37 @@ using System.Collections;
 
 public class Ak47 : MonoBehaviour
 {
-    [SerializeField] private float damage = 51f;
-    [SerializeField] private float attackDelay = 0.1f;
+    [Header("Gun Settings")]
+    [SerializeField] private float damage;
+    [SerializeField] private float attackDelay;
     [SerializeField] private float range = 20;
-    [SerializeField] private ParticleSystem flash;
+    [SerializeField] public static int MaxAmmo = 60;
+    [SerializeField] public static int currentAmmo = 30;
+
+    [Header("Audio")]
     [SerializeField] private AudioClip impact;
     [SerializeField] private AudioClip reload;
     [SerializeField] private AudioClip noAmmo;
 
-    [SerializeField] public static int MaxAmmo = 60;
-    [SerializeField] public static int currentAmmo = 30;
-
     private AudioSource akSound;
 
-    private float startPosX;
-    private float startPosY;
+    [Header("Muzzle Flash")]
+    [SerializeField] private ParticleSystem flash;
 
-    private Camera fpsCam;
+    [Header("GameObjects")]
+    [SerializeField] private GameObject _bulletHolePrefab;
+    [SerializeField] private GameObject _prefab;
 
+    [Header("UI")]
+    [SerializeField] public static TextMeshProUGUI ammoText;
+
+    [Header("Character and Camera")]
+    [SerializeField] private Camera fpsCam;
+    [SerializeField] private GameObject player;
+
+    [Header("Animation")]
     public static Animator animator;
-    private string currentAnimaton;
+    private string currentAnimation;
     public static string IDLE;
     private string FIRE;
     private string enableRUN;
@@ -34,27 +45,20 @@ public class Ak47 : MonoBehaviour
     private bool isAttacking;
     private bool isRunning;
 
-    private GameObject player;
-
     private float secundomer;
-    public static bool animComplite = true;
-
-    [SerializeField] private GameObject _bulletHolePrefab;
-    [SerializeField] private GameObject _prefab;
-
-    [SerializeField] public static TextMeshProUGUI ammoText;
+    public static bool animComplete = true;
 
     public static bool isReloading = false;
 
+    private float startPosX;
+    private float startPosY;
 
-
+    private void OnEnable() => ChangeAnimationState(IDLE);
 
     private void Start()
     {
-        animator = GetComponent<Animator>();
         akSound = GetComponent<AudioSource>();
-        fpsCam = GameObject.Find("PlayerCam").GetComponent<Camera>();
-
+        animator = GetComponent<Animator>();
         AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
 
         IDLE = clips[0].name.ToString();
@@ -64,47 +68,29 @@ public class Ak47 : MonoBehaviour
 
         reloadAnim = clips[5].name.ToString();
         ammoText = GameObject.Find("ammoAk").GetComponent<TextMeshProUGUI>();
-
-        player = GameObject.Find("Player");
-
-    }
-
-
-
-    private void OnEnable()
-    {
-        ChangeAnimationState(IDLE); 
     }
 
     private void Update()
     {
-        if (isReloading)
-        {
-            return;
-        }
+        if (isReloading) return;
 
-
-        if (currentAmmo == 0 && MaxAmmo > 0 && currentAmmo != 30) 
+        if (currentAmmo == 0 && MaxAmmo > 0)
         {
             StartCoroutine(ReloadGun());
             isReloading = true;
             return;
         }
 
-
-        if (PlayerCam.fire == true && currentAmmo > 0)
+        if (PlayerCam.fire && currentAmmo > 0)
         {
             isAttackPressed = true;
             startPosX = player.transform.position.x;
             startPosY = player.transform.position.y;
-            animComplite = false;
+            animComplete = false;
         }
 
-
-
         if (Mathf.Abs(PlayerMovement.horizontalInput) > 0 || Mathf.Abs(PlayerMovement.verticalInput) > 0)
-        { 
-            
+        {
             isRunning = true;
             secundomer += Time.deltaTime;
         }
@@ -116,84 +102,11 @@ public class Ak47 : MonoBehaviour
         }
     }
 
-
-
-
-    IEnumerator ReloadGun()
-    {
-        akSound.PlayOneShot(reload, 1F);
-        ChangeAnimationState(reloadAnim);
-
-        yield return new WaitForSeconds(2);
-
-
-        int amountToWithdraw = Mathf.Min(30 - currentAmmo, MaxAmmo);
-        MaxAmmo -= amountToWithdraw;
-        currentAmmo += amountToWithdraw;
-
-
-        ammoText.text = currentAmmo + " / " + MaxAmmo;
-
-        isReloading = false;
-        ChangeAnimationState(IDLE);
-    }
-
-    public void ReloadDown()
-    {
-        if (MaxAmmo > 0 && GameObject.Find("axeArms") == null)
-        {
-            StartCoroutine(ReloadGun());
-            isReloading = true;
-        }
-        
-    }
-
     private void FixedUpdate()
     {
         if (isAttackPressed)
         {
-       
-            flash.Play();
-            isAttackPressed = false; 
-            
-            if (!isAttacking)
-            {
-                isAttacking = true;
-
-                ChangeAnimationState(FIRE);
-
-                Invoke("AttackComplete", attackDelay);
-                AudioSource.PlayClipAtPoint(impact, new Vector3(5, 1, 2));
-
-
-
-                currentAmmo--;
-
-                ammoText.text = currentAmmo + " / " + MaxAmmo;
-
-                RaycastHit hit;
-
-                if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range))
-                {
-                    Targets targets = hit.transform.GetComponent<Targets>();
-
-                    
-                    if (targets != null)
-                    {
-                       // targets.transform.Rotate(1000,1000,1000, Space.Self);
-                        run.speed = 4;
-                        targets.TakeDamage(damage);
-                        Destroy(Instantiate(_prefab, hit.point, Quaternion.identity), 0.5f);
-                    }
-                    else
-                    {
-                        GameObject obj = Instantiate(_bulletHolePrefab, hit.point, Quaternion.LookRotation(hit.normal));
-                        obj.transform.position += obj.transform.forward / 1000;
-                        Destroy(obj, 4f);
-                    }
-                }
-
-            }
+            HandleAttack();
         }
         else if (!isAttacking && !isRunning && player.transform.position.x == startPosX && !isReloading)
         {
@@ -208,22 +121,86 @@ public class Ak47 : MonoBehaviour
         {
             ChangeAnimationState(disableRUN);
         }
+    }
 
+    IEnumerator ReloadGun()
+    {
+        akSound.PlayOneShot(reload, 1F);
+        ChangeAnimationState(reloadAnim);
+
+        yield return new WaitForSeconds(2);
+
+        int amountToWithdraw = Mathf.Min(30 - currentAmmo, MaxAmmo);
+        MaxAmmo -= amountToWithdraw;
+        currentAmmo += amountToWithdraw;
+
+        ammoText.text = currentAmmo + " / " + MaxAmmo;
+
+        isReloading = false;
+        ChangeAnimationState(IDLE);
+    }
+
+    public void ReloadDown()
+    {
+        if (MaxAmmo > 0 && GameObject.Find("axeArms") == null)
+        {
+            StartCoroutine(ReloadGun());
+            isReloading = true;
+        }
+    }
+
+    private void HandleAttack()
+    {
+        flash.Play();
+        isAttackPressed = false;
+
+        if (!isAttacking)
+        {
+            isAttacking = true;
+
+            ChangeAnimationState(FIRE);
+
+            Invoke("AttackComplete", attackDelay);
+            AudioSource.PlayClipAtPoint(impact, new Vector3(5, 1, 2));
+
+            currentAmmo--;
+
+            ammoText.text = currentAmmo + " / " + MaxAmmo;
+
+            RaycastHit hit;
+
+            if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range))
+            {
+                Targets targets = hit.transform.GetComponent<Targets>();
+
+                if (targets != null)
+                {
+                    run.speed = 4;
+                    targets.TakeDamage(damage);
+                    Destroy(Instantiate(_prefab, hit.point, Quaternion.identity), 0.5f);
+                }
+                else
+                {
+                    GameObject obj = Instantiate(_bulletHolePrefab, hit.point, Quaternion.LookRotation(hit.normal));
+                    obj.transform.position += obj.transform.forward / 1000;
+                    Destroy(obj, 4f);
+                }
+            }
+        }
     }
 
     private void ChangeAnimationState(string newAnimation)
     {
-        if (currentAnimaton == newAnimation) return;
+        if (currentAnimation == newAnimation) return;
 
         animator.Play(newAnimation);
-        currentAnimaton = newAnimation;
+        currentAnimation = newAnimation;
     }
 
     private void AttackComplete()
     {
-        
         isAttacking = false;
-        animComplite = true;
+        animComplete = true;
         run.speed = 6;
     }
 }

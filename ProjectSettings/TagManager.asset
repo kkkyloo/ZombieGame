@@ -5,14 +5,13 @@ TagManager:
   serializedVersion: 2
   tags:
   - floor
-  - axeArms
-  - pistol
   - ak
-  - Zombie
-  - arm
+  - sgUI
   - sgArms
   - ammotext
-  - sgUI
+  - axeArms
+  - Zombie
+  - arm
   layers:
   - Default
   - TransparentFX
@@ -33,9 +32,9 @@ TagManager:
   - 
   - 
   - 
-  - axearms
-  - post
-  - unpost
+  - 
+  - 
+  - 
   - 
   - 
   - 
