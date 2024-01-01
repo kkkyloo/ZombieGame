@@ -50,6 +50,14 @@ public class MovePlayer : MonoBehaviour
         _horizontalInput = Input.GetAxisRaw("Horizontal");
         _verticalInput = Input.GetAxisRaw("Vertical");
 
+        if (Input.GetKey("space"))
+        {
+            OnJumpButtonDown();
+        }
+        else
+        {
+            OnJumpButtonUp();
+        }
         if (_isJumpPress && _isReadyToJump && _isGrounded)
         {
             _isReadyToJump = false;

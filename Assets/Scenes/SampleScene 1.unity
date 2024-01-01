@@ -19884,7 +19884,7 @@ Transform:
   m_GameObject: {fileID: 1017127854430846825}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 12.91, y: -3.2012594, z: 5.95}
+  m_LocalPosition: {x: 12.91, y: -2.994, z: 5.95}
   m_LocalScale: {x: 1.6000001, y: 1.6000001, z: 1.6000001}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -20064,7 +20064,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1690979848707231690
 GameObject:
   m_ObjectHideFlags: 0
@@ -21337,7 +21337,7 @@ Camera:
   m_GameObject: {fileID: 5185264770501461074}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 4
+  m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -22103,8 +22103,8 @@ Transform:
   m_GameObject: {fileID: 6751322019819271614}
   serializedVersion: 2
   m_LocalRotation: {x: -4.973799e-14, y: 0.70710677, z: -0.00000011520235, w: 0.7071068}
-  m_LocalPosition: {x: 9.923803, y: 0.46004245, z: 1.4051813}
-  m_LocalScale: {x: 0.5486642, y: 0.5486642, z: 0.5486642}
+  m_LocalPosition: {x: 12.56, y: 0.24, z: 1.41}
+  m_LocalScale: {x: 0.5486642, y: 0.8, z: 0.5486642}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9030190623795426277}
@@ -23066,7 +23066,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &3263268189724011801
 Transform:
   m_ObjectHideFlags: 0
@@ -26123,7 +26123,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &5121929316154232641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26420,7 +26420,7 @@ MonoBehaviour:
   _sensitivity: 2
   _smoothing: 2
   _angleTilt: 2
-  _angleImpact: 1
+  _angleImpact: 0.6
   _speedTilt: 5
 --- !u!1 &5276058806782706601
 GameObject:
@@ -31220,7 +31220,7 @@ AudioReverbZone:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 946693754866446598}
-  m_Enabled: 0
+  m_Enabled: 1
   m_MinDistance: 10
   m_MaxDistance: 15
   m_ReverbPreset: 27
@@ -32510,13 +32510,11 @@ MonoBehaviour:
   impact: {fileID: 8300000, guid: caed9647d4aedbe47a565794833722a7, type: 3}
   reload: {fileID: 8300000, guid: 7f10bd08286011d48901b575e39be487, type: 3}
   noAmmo: {fileID: 8300000, guid: 124c7604692a87449a1489122ed62f73, type: 3}
-  reloadSoundVolume: 1
+  reloadSoundVolume: 0.1
   flash: {fileID: 923768849257104326}
   _bulletHolePrefab: {fileID: 1192542227713609518, guid: b5029c4ef0b690b479fece7173c6fb26,
     type: 3}
   _prefab: {fileID: 7109919715369664343, guid: b5d85d54dcaa43944aeaf3a674296fe5, type: 3}
-  fpsCam: {fileID: 2259562035746862476}
-  player: {fileID: 946693754866446598}
 --- !u!4 &8872868777749701970
 Transform:
   m_ObjectHideFlags: 0
@@ -32999,7 +32997,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!222 &9062508582782040133
 CanvasRenderer:
   m_ObjectHideFlags: 0
