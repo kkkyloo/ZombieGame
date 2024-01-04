@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UIElements;
 public class AxeScript : MonoBehaviour
 {
     [Header("Gun Settings")]
@@ -7,10 +8,11 @@ public class AxeScript : MonoBehaviour
     [SerializeField] private float attackDelay = 1.8f;
     [Header("Audio")]
     [SerializeField] private float InitialSoundVolume = 0.7f;
-    [SerializeField] private float ImpactDuration = 0.8f;
+    [SerializeField] private float ImpactDuration = 0.33f;
     [Header("GameObjects")]
     [SerializeField] private GameObject prefab;
     [SerializeField] private AudioClip impact;
+    [SerializeField] private float delayEndbleCollider;
 
     private GameObject _axe;
     private Collider _axeCollider;
@@ -35,7 +37,11 @@ public class AxeScript : MonoBehaviour
 
         AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
         idleAnimation = clips[0].name;
-        fireAnimation = clips[1].name;
+        fireAnimation = clips[3].name;
+
+        attackDelay = clips[3].length;
+
+
     }
     private void OnEnable() => ChangeAnimationState(idleAnimation);
     private void Update()
@@ -60,12 +66,14 @@ public class AxeScript : MonoBehaviour
         }
 
         ChangeAnimationState(fireAnimation);
+        yield return new WaitForSeconds(delayEndbleCollider);
+
         _axeCollider.enabled = true;
 
         yield return new WaitForSeconds(ImpactDuration);
 
         _axeCollider.enabled = false;
-        yield return new WaitForSeconds(attackDelay - ImpactDuration);
+        yield return new WaitForSeconds(attackDelay - ImpactDuration - delayEndbleCollider);
 
         AttackComplete();
     }

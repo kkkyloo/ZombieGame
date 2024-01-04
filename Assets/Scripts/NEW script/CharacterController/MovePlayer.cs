@@ -2,19 +2,19 @@ using UnityEngine;
 public class MovePlayer : MonoBehaviour
 {
     [Header("Movement")]
-    [SerializeField] private float _moveSpeed;
-    [SerializeField] private float _groundDrag;
-    [SerializeField] private float _jumpForce;
-    [SerializeField] private float _jumpCooldown;
-    [SerializeField] private float _airMultiplier;
+    [SerializeField] private float _moveSpeed = 9;
+    [SerializeField] private float _groundDrag = 5;
+    [SerializeField] private float _jumpForce = 6.3f;
+    [SerializeField] private float _jumpCooldown = 0.25f;
+    [SerializeField] private float _airMultiplier = 0.5f;
 
     [Header("Ground Check")]
-    [SerializeField] private float _playerHeight;
+    [SerializeField] private float _playerHeight = 2;
     [SerializeField] private LayerMask _ground;
     [SerializeField] private Transform _orientation;
 
     [Header("Slope Handling")]
-    [SerializeField] private float _maxSlopeAngle;
+    [SerializeField] private float _maxSlopeAngle = 0;
 
     private float _horizontalInput;
     private float _verticalInput;
@@ -23,7 +23,6 @@ public class MovePlayer : MonoBehaviour
     private Rigidbody _rigidBody;
     private RaycastHit _slopeHit;
 
-    private bool _isExitingSlope;
     private bool _isReadyToJump;
     private bool _isGrounded;
     private bool _isJumpPress = false;
@@ -50,14 +49,10 @@ public class MovePlayer : MonoBehaviour
         _horizontalInput = Input.GetAxisRaw("Horizontal");
         _verticalInput = Input.GetAxisRaw("Vertical");
 
-        if (Input.GetKey("space"))
-        {
-            OnJumpButtonDown();
-        }
-        else
-        {
-            OnJumpButtonUp();
-        }
+        if (Input.GetKey(KeyCode.Space)) OnJumpButtonDown();
+        
+        else OnJumpButtonUp();
+        
         if (_isJumpPress && _isReadyToJump && _isGrounded)
         {
             _isReadyToJump = false;
@@ -70,9 +65,9 @@ public class MovePlayer : MonoBehaviour
     private void Move()
     {
         _moveDirection = _orientation.forward * _verticalInput + _orientation.right * _horizontalInput;
-        if (OnSlope() && !_isExitingSlope)
+        if (OnSlope())
         {
-            _rigidBody.AddForce(GetSlopeMoveDirection() * _moveSpeed * 20f, ForceMode.Force);
+            _rigidBody.AddForce(_moveSpeed * 20f * GetSlopeMoveDirection(), ForceMode.Force);
 
             if (_rigidBody.velocity.y > 0)
                 _rigidBody.AddForce(Vector3.down * 80f, ForceMode.Force);
@@ -80,15 +75,16 @@ public class MovePlayer : MonoBehaviour
 
         if (_isGrounded)
         {
-            _rigidBody.AddForce(_moveDirection.normalized * _moveSpeed * 10f, ForceMode.Force);
+            _rigidBody.AddForce(_moveSpeed * 10f * _moveDirection.normalized, ForceMode.Force);
             Actions.OnMove(_horizontalInput, _verticalInput);
+            Actions.OnMoveSound(_horizontalInput, _verticalInput, _isJumpPress);
         }
 
-        else if (!_isGrounded) _rigidBody.AddForce(_moveDirection.normalized * _moveSpeed * 10f * _airMultiplier, ForceMode.Force);
+        else if (!_isGrounded) _rigidBody.AddForce(_airMultiplier * _moveSpeed * 10f * _moveDirection.normalized, ForceMode.Force);
     }
     private void SpeedControl()
     {
-        Vector3 flatVel = new Vector3(_rigidBody.velocity.x, 0f, _rigidBody.velocity.z);
+        Vector3 flatVel = new(_rigidBody.velocity.x, 0f, _rigidBody.velocity.z);
 
         if (flatVel.magnitude > _moveSpeed)
         {

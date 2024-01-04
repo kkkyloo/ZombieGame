@@ -14,7 +14,7 @@ public class Crosshair : MonoBehaviour
 
     private void Update()
     {
-        if (isMoving)
+        if (IsMoving)
         {
             sizeCurrent = Mathf.Lerp(sizeCurrent, sizeMove, Time.deltaTime * speedSize);
         }
@@ -26,7 +26,7 @@ public class Crosshair : MonoBehaviour
         crosshair.sizeDelta = new Vector2(sizeCurrent, sizeCurrent);
     }
 
-    bool isMoving
+    bool IsMoving
     {
         get
         {
