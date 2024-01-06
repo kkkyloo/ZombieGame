@@ -4,99 +4,100 @@ using UnityEngine;
 public class AxeScript : MonoBehaviour
 {
     [Header("Gun Settings")]
-    [SerializeField] private int damage = 65;
-    [SerializeField] private float attackDelay = 1.8f;
-    [Header("Audio")]
-    [SerializeField] private float InitialSoundVolume = 0.7f;
-    [SerializeField] private float ImpactDuration = 0.33f;
+    [SerializeField] private int _damage = 65;
+    [SerializeField] private float _attackDelay = 1.8f;
     [Header("GameObjects")]
-    [SerializeField] private GameObject prefab;
-    [SerializeField] private AudioClip impact;
-    [SerializeField] private float delayEndbleCollider;
+    [SerializeField] private GameObject _blood;
+    [Header("Delay")]
+    [SerializeField] private float _delayEndbleCollider = 0.2f;
+    [SerializeField] private float _impactDuration = 0.33f;
+    [Header("Sound")]
+    [SerializeField] private AudioClip _airHit;
+    [SerializeField] private AudioClip[] _enemyHitSound;
+    [SerializeField] private float _enemyHitSoundVolume = 0.4f;
+    [SerializeField] private float _airHitSound = 4f;
 
     private GameObject _axe;
     private Collider _axeCollider;
-    private AudioSource sound;
-    private Animator animator;
+    private AudioSource _audioSource;
+    private Animator _animator;
 
-    private string currentAnimation;
-    private string idleAnimation;
-    private string fireAnimation;
+    private string _currentAnimation;
+    private string _idleAnimation;
+    private string _fireAnimation;
 
-    private bool isAttacking;
-    private bool isSoundEnabled = true;
+    private bool _isAttacking;
+    private bool _isSoundEnabled = true;
     private bool _getHit = false;
-
-
     private void Awake()
     {
-        animator = GetComponent<Animator>();
-        sound = gameObject.AddComponent<AudioSource>();
-        sound.clip = impact;
+        _animator = GetComponent<Animator>();
+        _audioSource = gameObject.AddComponent<AudioSource>();
+        _audioSource.clip = _airHit;
 
         _axe = GameObject.FindGameObjectWithTag("axeArms");
         _axeCollider = GetComponent<Collider>();
 
-        AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
-        idleAnimation = clips[0].name;
-        fireAnimation = clips[3].name;
+        AnimationClip[] clips = _animator.runtimeAnimatorController.animationClips;
+        _idleAnimation = clips[0].name;
+        _fireAnimation = clips[3].name;
 
-        attackDelay = clips[3].length;
+        _attackDelay = clips[3].length;
     }
-    private void OnEnable() => ChangeAnimationState(idleAnimation);
+    private void OnEnable() => ChangeAnimationState(_idleAnimation);
     private void Update()
     {
-        if (Input.GetButtonDown("Fire1") && _axe.activeSelf && animator.GetCurrentAnimatorStateInfo(0).IsName(idleAnimation))
+        if (Input.GetButtonDown("Fire1") && _axe.activeSelf && _animator.GetCurrentAnimatorStateInfo(0).IsName(_idleAnimation))
             Attack();
     }
     private void Attack()
     {
-        if (!isAttacking)
+        if (!_isAttacking)
         {
-            isAttacking = true;
+            _isAttacking = true;
             StartCoroutine(PerformAttack());
         }
     }
     private IEnumerator PerformAttack()
     {
-        if (isSoundEnabled)
+        if (_isSoundEnabled)
         {
-            sound.PlayOneShot(impact, InitialSoundVolume);
-            isSoundEnabled = false;
+            _audioSource.PlayOneShot(_airHit, _airHitSound);
+            _isSoundEnabled = false;
         }
 
-        ChangeAnimationState(fireAnimation);
-        yield return new WaitForSeconds(delayEndbleCollider);
+        ChangeAnimationState(_fireAnimation);
+        yield return new WaitForSeconds(_delayEndbleCollider);
 
         _axeCollider.enabled = true;
 
-        yield return new WaitForSeconds(ImpactDuration);
+        yield return new WaitForSeconds(_impactDuration);
 
         _axeCollider.enabled = false;
-        yield return new WaitForSeconds(attackDelay - ImpactDuration - delayEndbleCollider);
+        yield return new WaitForSeconds(_attackDelay - _impactDuration - _delayEndbleCollider);
 
         AttackComplete();
     }
     private void AttackComplete()
     {
-        isSoundEnabled = true;
-        isAttacking = false;
-        ChangeAnimationState(idleAnimation);
+        _isSoundEnabled = true;
+        _isAttacking = false;
+        ChangeAnimationState(_idleAnimation);
     }
     private void ChangeAnimationState(string newAnimation)
     {
-        if (currentAnimation == newAnimation) return;
+        if (_currentAnimation == newAnimation) return;
 
-        animator.Play(newAnimation);
-        currentAnimation = newAnimation;
+        _animator.Play(newAnimation);
+        _currentAnimation = newAnimation;
     }
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent<AiZombie>(out var targets) && !_getHit && targets.enabled)
         {
-            targets.TakeDamage(damage);
-            Destroy(Instantiate(prefab, other.transform.position, Quaternion.identity), 0.5f);
-
+            targets.TakeDamage(_damage);
+            Destroy(Instantiate(_blood, other.transform.position, Quaternion.identity), 0.5f);
+            _audioSource.PlayOneShot(_enemyHitSound[Random.Range(0, _enemyHitSound.Length)], _enemyHitSoundVolume);
             _getHit = true;
             StartCoroutine(GetHitDefault());
         }
