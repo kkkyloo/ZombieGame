@@ -6,22 +6,26 @@ public class AxeScript : MonoBehaviour
     [Header("Gun Settings")]
     [SerializeField] private int _damage = 65;
     [SerializeField] private float _attackDelay = 1.8f;
+
     [Header("GameObjects")]
     [SerializeField] private GameObject _blood;
+    private Collider _axeCollider;
+
     [Header("Delay")]
     [SerializeField] private float _delayEndbleCollider = 0.2f;
     [SerializeField] private float _impactDuration = 0.33f;
+
     [Header("Sound")]
     [SerializeField] private AudioClip _airHit;
     [SerializeField] private AudioClip[] _enemyHitSound;
     [SerializeField] private float _enemyHitSoundVolume = 0.4f;
     [SerializeField] private float _airHitSound = 4f;
-
-    private GameObject _axe;
-    private Collider _axeCollider;
     private AudioSource _audioSource;
-    private Animator _animator;
+    private int _enemyHitSoundIndex = 0;
 
+    // private GameObject _axe;
+
+    private Animator _animator;
     private string _currentAnimation;
     private string _idleAnimation;
     private string _fireAnimation;
@@ -35,7 +39,7 @@ public class AxeScript : MonoBehaviour
         _audioSource = gameObject.AddComponent<AudioSource>();
         _audioSource.clip = _airHit;
 
-        _axe = GameObject.FindGameObjectWithTag("axeArms");
+        //   _axe = GameObject.FindGameObjectWithTag("axeArms");
         _axeCollider = GetComponent<Collider>();
 
         AnimationClip[] clips = _animator.runtimeAnimatorController.animationClips;
@@ -47,7 +51,7 @@ public class AxeScript : MonoBehaviour
     private void OnEnable() => ChangeAnimationState(_idleAnimation);
     private void Update()
     {
-        if (Input.GetButtonDown("Fire1") && _axe.activeSelf && _animator.GetCurrentAnimatorStateInfo(0).IsName(_idleAnimation))
+        if (Input.GetButtonDown("Fire1") && _animator.GetCurrentAnimatorStateInfo(0).IsName(_idleAnimation)) // && _axe.activeSelf
             Attack();
     }
     private void Attack()
@@ -97,10 +101,20 @@ public class AxeScript : MonoBehaviour
         {
             targets.TakeDamage(_damage);
             Destroy(Instantiate(_blood, other.transform.position, Quaternion.identity), 0.5f);
-            _audioSource.PlayOneShot(_enemyHitSound[Random.Range(0, _enemyHitSound.Length)], _enemyHitSoundVolume);
+            _audioSource.PlayOneShot(_enemyHitSound[ChangeHitSound()], _enemyHitSoundVolume);
             _getHit = true;
             StartCoroutine(GetHitDefault());
         }
+    }
+    private int ChangeHitSound()
+    {
+        _enemyHitSoundIndex += 1;
+        if (_enemyHitSoundIndex == _enemyHitSound.Length)
+        {
+            _enemyHitSoundIndex = 0;
+            return Random.Range(0, _enemyHitSound.Length);
+        }
+        return _enemyHitSoundIndex;
     }
     private IEnumerator GetHitDefault()
     {

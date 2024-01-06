@@ -11,7 +11,7 @@ public class AiZombie : MonoBehaviour
     [SerializeField] private float _distanceSee = 10f;
     [SerializeField] private float _hp = 100;
     [SerializeField] private float _distanceToWayPoint = 2f;
-
+    [SerializeField] private float _changeAnimDelay = 0.4f;
     private NavMeshAgent _agent;
     private Animator _animator;
     private Vector3 _target;
@@ -62,10 +62,18 @@ public class AiZombie : MonoBehaviour
         if (_distanceToPlayer < _agent.stoppingDistance + _attackRangePlus)
         {
             _agent.speed = 0f;
-            _animator.SetBool("Attack", true);
+            StartCoroutine(ChangeAnimation(true));
         }
-        else _animator.SetBool("Attack", false);
+        else StartCoroutine(ChangeAnimation(false));
     }
+
+    private IEnumerator ChangeAnimation(bool state)
+    {
+        yield return new WaitForSeconds(_changeAnimDelay);
+        _animator.SetBool("Attack", state);
+    }
+
+
     public void TakeDamage(float damage)
     {
         if (_hp - damage > 0) _hp -= damage;
