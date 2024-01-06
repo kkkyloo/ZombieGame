@@ -10,7 +10,7 @@ public class AiZombie : MonoBehaviour
     [SerializeField] private float _runSpeed = 7f;
     [SerializeField] private float _distanceSee = 10f;
     [SerializeField] private float _hp = 100;
-    [SerializeField] private int _distanceToWayPoint = 2;
+    [SerializeField] private float _distanceToWayPoint = 2f;
 
     private NavMeshAgent _agent;
     private Animator _animator;
@@ -34,6 +34,7 @@ public class AiZombie : MonoBehaviour
         if (_distanceToPlayer > _distanceSee)
         {
             if (Vector3.Distance(transform.position, _target) < _distanceToWayPoint) StartCoroutine(SmoothChangeWayPoint());
+            _agent.SetDestination(_target);
         }
         else AttackPlayer();
 
