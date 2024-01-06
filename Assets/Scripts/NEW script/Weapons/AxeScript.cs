@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UIElements;
+
 public class AxeScript : MonoBehaviour
 {
     [Header("Gun Settings")]
@@ -25,6 +25,8 @@ public class AxeScript : MonoBehaviour
 
     private bool isAttacking;
     private bool isSoundEnabled = true;
+    private bool _getHit = false;
+
 
     private void Awake()
     {
@@ -40,8 +42,6 @@ public class AxeScript : MonoBehaviour
         fireAnimation = clips[3].name;
 
         attackDelay = clips[3].length;
-
-
     }
     private void OnEnable() => ChangeAnimationState(idleAnimation);
     private void Update()
@@ -92,10 +92,18 @@ public class AxeScript : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Zombie"))
+        if (other.TryGetComponent<AiZombie>(out var targets) && !_getHit && targets.enabled)
         {
+            targets.TakeDamage(damage);
             Destroy(Instantiate(prefab, other.transform.position, Quaternion.identity), 0.5f);
-            other.gameObject.GetComponent<Targets>().TakeDamage(damage);
+
+            _getHit = true;
+            StartCoroutine(GetHitDefault());
         }
+    }
+    private IEnumerator GetHitDefault()
+    {
+        yield return new WaitForSeconds(1f);
+        _getHit = false;
     }
 }

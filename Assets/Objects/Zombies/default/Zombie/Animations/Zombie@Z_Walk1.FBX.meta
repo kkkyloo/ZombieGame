@@ -21,17 +21,17 @@ ModelImporter:
     rigImportErrors: 
     rigImportWarnings: 
     animationImportErrors: 
-    animationImportWarnings: "\nClip 'ZombieFree@animation' has import animation warnings
-      that might lower retargeting quality:\nNote: Activate translation DOF on avatar
-      to improve retargeting quality.\n\t'Base HumanRibcage' is inbetween humanoid
-      transforms and has rotation animation that will be discarded.\n\t'Base HumanRArmDigit23'
-      has scale animation that will be discarded.\n\t'Base HumanRArmDigit43' has scale
-      animation that will be discarded.\n\t'Base HumanRArmDigit53' has scale animation
-      that will be discarded.\n\t'Base HumanLArmDigit23' has scale animation that
-      will be discarded.\n\t'Base HumanLArmDigit32' has scale animation that will
-      be discarded.\n\t'Base HumanLArmDigit33' has scale animation that will be discarded.\n\t'Base
-      HumanLArmDigit43' has scale animation that will be discarded.\n\t'Base HumanLArmDigit53'
-      has scale animation that will be discarded.\n"
+    animationImportWarnings: "\nClip 'ZombieFree@animation' has import animation
+      warnings that might lower retargeting quality:\nNote: Activate translation
+      DOF on avatar to improve retargeting quality.\n\t'Base HumanRibcage' is inbetween
+      humanoid transforms and has rotation animation that will be discarded.\n\t'Base
+      HumanRArmDigit23' has scale animation that will be discarded.\n\t'Base HumanRArmDigit43'
+      has scale animation that will be discarded.\n\t'Base HumanRArmDigit53' has
+      scale animation that will be discarded.\n\t'Base HumanLArmDigit23' has scale
+      animation that will be discarded.\n\t'Base HumanLArmDigit32' has scale animation
+      that will be discarded.\n\t'Base HumanLArmDigit33' has scale animation that
+      will be discarded.\n\t'Base HumanLArmDigit43' has scale animation that will
+      be discarded.\n\t'Base HumanLArmDigit53' has scale animation that will be discarded.\n"
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
@@ -902,3 +902,10 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 30232
+  packageName: Zombie
+  packageVersion: Draft 1.2
+  assetPath: Assets/Objects/Zombies/default/Zombie/Animations/Zombie@Z_Walk1.FBX
+  uploadId: 334764

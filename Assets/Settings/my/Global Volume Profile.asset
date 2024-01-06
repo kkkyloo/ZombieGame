@@ -41,7 +41,7 @@ MonoBehaviour:
     m_Value: {r: 0.764151, g: 0.6359662, b: 0.5803222, a: 1}
   balance:
     m_OverrideState: 1
-    m_Value: 4
+    m_Value: 42
 --- !u!114 &-7935823670099035160
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -60,7 +60,7 @@ MonoBehaviour:
     m_Value: 0
   contrast:
     m_OverrideState: 1
-    m_Value: -4
+    m_Value: 0
   colorFilter:
     m_OverrideState: 1
     m_Value: {r: 1, g: 1, b: 1, a: 1}
@@ -85,7 +85,7 @@ MonoBehaviour:
   active: 1
   temperature:
     m_OverrideState: 1
-    m_Value: 55
+    m_Value: 84
   tint:
     m_OverrideState: 1
     m_Value: 100
@@ -177,13 +177,13 @@ MonoBehaviour:
     m_Value: {x: 0.5, y: 0.5}
   intensity:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 0.21
   smoothness:
     m_OverrideState: 1
-    m_Value: 0.01
+    m_Value: 0.17
   rounded:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 1
 --- !u!114 &-5534126117083262037
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -245,7 +245,7 @@ MonoBehaviour:
   active: 1
   intensity:
     m_OverrideState: 1
-    m_Value: 0.312
+    m_Value: 0.42
 --- !u!114 &-2308983491190545849
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -414,13 +414,13 @@ MonoBehaviour:
   active: 1
   lift:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: 0}
+    m_Value: {x: 1, y: 0.98217714, z: 0.7237379, w: 0}
   gamma:
     m_OverrideState: 1
-    m_Value: {x: 0.93979526, y: 1, z: 0.71076345, w: 0.06468316}
+    m_Value: {x: 0.9819723, y: 1, z: 0.4598515, w: 0.06468316}
   gain:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 0.95255876, z: 0.7741601, w: -0.08189462}
+    m_Value: {x: 0.9686017, y: 1, z: 0.629628, w: -0.08189462}
 --- !u!114 &1396347412541648143
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -473,16 +473,16 @@ MonoBehaviour:
     m_Value: 1
   threshold:
     m_OverrideState: 1
-    m_Value: 0.95
+    m_Value: 0.92
   intensity:
     m_OverrideState: 1
-    m_Value: 12.2
+    m_Value: 13
   scatter:
     m_OverrideState: 1
-    m_Value: 0.84
+    m_Value: 0.85
   clamp:
     m_OverrideState: 1
-    m_Value: 2
+    m_Value: 6000
   tint:
     m_OverrideState: 1
     m_Value: {r: 1, g: 1, b: 1, a: 1}

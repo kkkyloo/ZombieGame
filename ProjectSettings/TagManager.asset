@@ -12,6 +12,7 @@ TagManager:
   - axeArms
   - Zombie
   - arm
+  - Enemy
   layers:
   - Default
   - TransparentFX

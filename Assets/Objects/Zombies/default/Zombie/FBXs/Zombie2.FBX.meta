@@ -897,3 +897,10 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 30232
+  packageName: Zombie
+  packageVersion: Draft 1.2
+  assetPath: Assets/Objects/Zombies/default/Zombie/FBXs/Zombie2.FBX
+  uploadId: 334764

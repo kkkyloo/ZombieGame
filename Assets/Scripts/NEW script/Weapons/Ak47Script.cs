@@ -121,15 +121,13 @@ public class Ak47Script : MonoBehaviour
     }
     private void HandleHitResult(RaycastHit hit)
     {
-        if (hit.transform.TryGetComponent<Targets>(out var targets))
+        if (hit.transform.TryGetComponent<AiZombie>(out var targets) && targets.enabled)
         {
-            run.speed = 4;
-            //targets.TakeDamage(damage);
             targets.TakeDamage(GetDamageByRange(hit.distance));
-
+            // Actions.OnHitEnemy(GetDamageByRange(hit.distance), hit.collider.gameObject);
             Destroy(Instantiate(_prefab, hit.point, Quaternion.identity), 0.5f);
         }
-        else CreateBulletHole(hit);
+        else if(!hit.transform.CompareTag("Enemy")) CreateBulletHole(hit);
     }
     private void CreateBulletHole(RaycastHit hit)
     {
@@ -148,7 +146,7 @@ public class Ak47Script : MonoBehaviour
     private void AttackComplete() // в зависимоти от eange урон
     {
         isAttacking = false;
-        run.speed = 6;
+        //      run.speed = 6;
     }
     private float GetDamageByRange(float distance)
     {
