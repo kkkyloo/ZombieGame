@@ -31147,11 +31147,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8012714356462071620, guid: 999ed6de3fba3e2448f92655d1c59356,
         type: 3}
-      propertyPath: _hearShootRaduis
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 8012714356462071620, guid: 999ed6de3fba3e2448f92655d1c59356,
-        type: 3}
       propertyPath: _playerTransform
       value: 
       objectReference: {fileID: 8872868777749701970}

@@ -1690,7 +1690,7 @@ MonoBehaviour:
   _obstacleMask:
     serializedVersion: 2
     m_Bits: 16
-  _hearShootRaduis: 15
+  _hearShootRaduis: 30
   _hearStepRaduis: 7
   _radiusView: 4
   _angleView: 120
