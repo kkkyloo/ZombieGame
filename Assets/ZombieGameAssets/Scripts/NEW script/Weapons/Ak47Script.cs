@@ -19,6 +19,9 @@ public class Ak47Script : MonoBehaviour
     [SerializeField] private float _noAmmoSoundVolume = 1f;
     [SerializeField] private float _changeGunSoundVolume = 1f;
     private AudioSource akSound;
+    [SerializeField] private AudioClip[] _enemyHitSounds;
+    [SerializeField] private float _enemyHitSoundVolume = 0.1f;
+    private int _enemyHitSoundIndex = 0;
 
     [Header("Muzzle Flash")]
     [SerializeField] private ParticleSystem _particleFlash;
@@ -101,7 +104,6 @@ public class Ak47Script : MonoBehaviour
     private void HandleAttack()
     {
         Actions.GunShoot();
-
         PlayAttackAnimation();
         _isAttackPressed = false;
 
@@ -132,10 +134,23 @@ public class Ak47Script : MonoBehaviour
         if (hit.transform.TryGetComponent<AiZombie>(out var targets) && targets.enabled)
         {
             targets.TakeDamage(GetDamageByRange(hit.distance));
+
+            akSound.PlayOneShot(_enemyHitSounds[ChangeHitSound()], _enemyHitSoundVolume);
+
             // Actions.OnHitEnemy(GetDamageByRange(hit.distance), hit.collider.gameObject);
             Destroy(Instantiate(_prefab, hit.point, Quaternion.identity), 0.5f);
         }
         else if (!hit.transform.CompareTag("Enemy")) CreateBulletHole(hit);
+    }
+    private int ChangeHitSound()
+    {
+        _enemyHitSoundIndex += 1;
+        if (_enemyHitSoundIndex == _enemyHitSounds.Length)
+        {
+            _enemyHitSoundIndex = 0;
+            return Random.Range(0, _enemyHitSounds.Length);
+        }
+        return _enemyHitSoundIndex;
     }
     private void CreateBulletHole(RaycastHit hit)
     {

@@ -103,19 +103,19 @@ public class AxeScript : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent<AiZombie>(out var targets) && !_getHit && targets.enabled)
+        if (other.TryGetComponent<AiZombie>(out var targets) && !targets.GetDamage && targets.enabled)
         {
             targets.TakeDamage(_damage);
             Destroy(Instantiate(_blood, other.transform.position, Quaternion.identity), 0.5f);
             _audioSource.PlayOneShot(_enemyHitSounds[ChangeHitSound()], _enemyHitSoundVolume);
-            _getHit = true;
-            StartCoroutine(GetHitDefault());
+            targets.GetDamage = true;
+            StartCoroutine(GetHitDefault(targets));
         }
-        else if (other.CompareTag("floor") && !_getHit)
+        else if (other.CompareTag("floor")) // && !_getHit
         {
             _audioSource.PlayOneShot(_wordHitSound, _wordHitSoundVolume);
-            _getHit = true;
-            StartCoroutine(GetHitDefault());
+          //  _getHit = true;
+         //   StartCoroutine(GetHitDefault());
         }
     }
     private int ChangeHitSound()
@@ -138,9 +138,10 @@ public class AxeScript : MonoBehaviour
         }
         return _missSoundIndex;
     }
-    private IEnumerator GetHitDefault()
+    private IEnumerator GetHitDefault(AiZombie targets)
     {
         yield return new WaitForSeconds(1f);
+        targets.GetDamage = false;
         _getHit = false;
     }
 }

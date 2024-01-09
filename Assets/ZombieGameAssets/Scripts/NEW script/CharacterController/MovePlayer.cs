@@ -32,6 +32,10 @@ public class MovePlayer : MonoBehaviour
         _rigidBody.freezeRotation = true;
         _isReadyToJump = true;
     }
+    private void Start()
+    {
+        _isGrounded = Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _ground);
+    }
     private void FixedUpdate() // было update. при большом маленьком фпс можно было забраться на склон
     {
         _horizontalInput = Input.GetAxisRaw("Horizontal");

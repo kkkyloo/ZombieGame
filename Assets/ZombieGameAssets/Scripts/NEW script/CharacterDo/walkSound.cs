@@ -18,6 +18,7 @@ public class WalkSound : MonoBehaviour
         {
             _sound.pitch = Random.Range(_startRange, _endRange);
             _sound.enabled = true;
+            Actions.OnMoveSound2?.Invoke();
         }
         else
         {

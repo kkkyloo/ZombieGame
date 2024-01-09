@@ -23,7 +23,6 @@ public class CameraScript : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-
         Actions.OnMove += AngleChange;
         Actions.GunShoot += Impact;
         Actions.GetEnemyHit += GetDamage;
@@ -35,7 +34,6 @@ public class CameraScript : MonoBehaviour
         Actions.GunShoot -= Impact;
         Actions.GetEnemyHit -= GetDamage;
         Actions.AxeShoot -= AxeImpact;
-
     }
     private void Update()
     {
