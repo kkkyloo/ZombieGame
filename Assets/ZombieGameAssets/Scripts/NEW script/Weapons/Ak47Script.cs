@@ -50,7 +50,7 @@ public class Ak47Script : MonoBehaviour
     }
     private void Awake()
     {
-        akSound = gameObject.AddComponent<AudioSource>();
+        akSound = GetComponent<AudioSource>();
         _animator = GetComponent<Animator>();
         _camera = GameObject.FindWithTag("MainCamera");
 

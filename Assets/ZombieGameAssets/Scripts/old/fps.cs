@@ -3,6 +3,6 @@ public class FpsControll : MonoBehaviour
 {
     private void Awake()
     {
-        Application.targetFrameRate = 165;
+        Application.targetFrameRate = 1165;
     }
 }

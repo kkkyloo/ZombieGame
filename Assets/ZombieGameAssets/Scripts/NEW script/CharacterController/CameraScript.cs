@@ -81,6 +81,5 @@ public class CameraScript : MonoBehaviour
         if(z)
             currentAngleTilt = Mathf.Lerp(currentAngleTilt, _angleTilt, Time.deltaTime * _speedTilt);  //нужно из изначального в мое, а не из моего в изначальное
         else currentAngleTilt = Mathf.Lerp(currentAngleTilt, 0.0f, Time.deltaTime * _speedTilt);
-
     }
 }

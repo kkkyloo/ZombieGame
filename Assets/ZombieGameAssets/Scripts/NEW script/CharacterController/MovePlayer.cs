@@ -86,13 +86,13 @@ public class MovePlayer : MonoBehaviour
         if (_isGrounded)
         {
             _rigidBody.AddForce(_moveSpeed * 10f * _moveDirection.normalized, ForceMode.Force);
-            Actions.OnMove(_horizontalInput, _verticalInput);
+         //   Actions.OnMove(_horizontalInput, _verticalInput);
         }
 
         else if (!_isGrounded) _rigidBody.AddForce(_airMultiplier * _moveSpeed * 10f * _moveDirection.normalized, ForceMode.Force);
 
         Actions.OnMoveSound(_horizontalInput, _verticalInput, _isGrounded);
-
+        Actions.OnMove(_horizontalInput, _verticalInput);
     }
     private void SpeedControl()
     {
