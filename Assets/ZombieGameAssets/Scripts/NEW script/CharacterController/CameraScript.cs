@@ -11,7 +11,7 @@ public class CameraScript : MonoBehaviour
     [SerializeField] private float _speedTilt = 5f;
     [SerializeField] private int[] _angleDamage = { -250, 250 };
     [SerializeField] private float _angelAxeTime;
-
+    [SerializeField] private float _delayAxeImpact = 0.2f;
     private float _xRotation = 0;
     private float _yRotation = 0;
     private float _horizontalInput = 0;
@@ -76,10 +76,19 @@ public class CameraScript : MonoBehaviour
         else if (damage > 20)
             currentAngleTilt = Mathf.Lerp(currentAngleTilt, _angleDamage[Random.Range(0, 2)] + 50, Time.deltaTime * 7);
     }
-    private void AxeImpact(bool z) // передавать состояние атаки. если не атакует, то в элс вернуть к изначальному
+    private void AxeImpact() => StartCoroutine(DoImpact2());
+
+    IEnumerator DoImpact2()
     {
-        if(z)
-            currentAngleTilt = Mathf.Lerp(currentAngleTilt, _angleTilt, Time.deltaTime * _speedTilt);  //нужно из изначального в мое, а не из моего в изначальное
-        else currentAngleTilt = Mathf.Lerp(currentAngleTilt, 0.0f, Time.deltaTime * _speedTilt);
+        bool x = false;
+        while (!x)
+        {
+            yield return new WaitForSeconds(_delayAxeImpact);
+            currentAngleTilt = Mathf.Lerp(currentAngleTilt, _angleDamage[2], Time.deltaTime * _angelAxeTime);
+            transform.rotation = Quaternion.Euler(_xRotation, _yRotation, currentAngleTilt);
+            yield return new WaitForSeconds(4f);
+            x = true;
+        }
+
     }
 }

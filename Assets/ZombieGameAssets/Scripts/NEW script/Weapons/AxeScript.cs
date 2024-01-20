@@ -39,7 +39,7 @@ public class AxeScript : MonoBehaviour
     private void Awake()
     {
         _animator = GetComponent<Animator>();
-        _audioSource = gameObject.AddComponent<AudioSource>();
+        _audioSource = GetComponent<AudioSource>();
 
         //   _axe = GameObject.FindGameObjectWithTag("axeArms");
         _axeCollider = GetComponent<Collider>();
@@ -72,7 +72,7 @@ public class AxeScript : MonoBehaviour
             _audioSource.PlayOneShot(_missSounds[ChangeMissSound()], _missSoundVolume);
             _isSoundEnabled = false;
         }
-        Actions.AxeShoot(true);
+        Actions.AxeShoot();
         ChangeAnimationState(_fireAnimation);
         yield return new WaitForSeconds(_delayEndbleCollider);
 
@@ -84,9 +84,7 @@ public class AxeScript : MonoBehaviour
         yield return new WaitForSeconds(_attackDelay - _impactDuration - _delayEndbleCollider);
         
         AttackComplete();
-        yield return new WaitForSeconds(2f);
 
-        Actions.AxeShoot(false);
     }
     private void AttackComplete()
     {
@@ -107,7 +105,9 @@ public class AxeScript : MonoBehaviour
         {
             targets.TakeDamage(_damage);
             Destroy(Instantiate(_blood, other.transform.position, Quaternion.identity), 0.5f);
-            _audioSource.PlayOneShot(_enemyHitSounds[ChangeHitSound()], _enemyHitSoundVolume);
+           // _audioSource.PlayOneShot(_enemyHitSounds[ChangeHitSound()], _enemyHitSoundVolume);
+            AudioSource.PlayClipAtPoint(_enemyHitSounds[ChangeHitSound()], other.transform.position, _enemyHitSoundVolume);
+
             targets.GetDamage = true;
             StartCoroutine(GetHitDefault(targets));
         }

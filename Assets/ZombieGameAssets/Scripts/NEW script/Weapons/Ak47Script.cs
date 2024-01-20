@@ -135,7 +135,8 @@ public class Ak47Script : MonoBehaviour
         {
             targets.TakeDamage(GetDamageByRange(hit.distance));
 
-            akSound.PlayOneShot(_enemyHitSounds[ChangeHitSound()], _enemyHitSoundVolume);
+           // akSound.PlayOneShot(_enemyHitSounds[ChangeHitSound()], _enemyHitSoundVolume);
+            AudioSource.PlayClipAtPoint(_enemyHitSounds[ChangeHitSound()], hit.transform.position, _enemyHitSoundVolume);
 
             // Actions.OnHitEnemy(GetDamageByRange(hit.distance), hit.collider.gameObject);
             Destroy(Instantiate(_prefab, hit.point, Quaternion.identity), 0.5f);

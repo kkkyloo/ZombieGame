@@ -61,38 +61,53 @@ public class AiZombie : MonoBehaviour
             FieldOfViewCheck();
         }
         else if (!_isFirstAttackDelay) StartCoroutine(FirstAttackDelay());
-        else AttackPlayer();
+        else
+        {
+            StartCoroutine(SmoothSetDestonation());
+            AttackPlayer();
+        }
 
         _animator.SetFloat("Speed", _agent.velocity.magnitude);
     }
+
     private void FieldOfViewCheck()
     {
         Vector3 playerTarget = (_playerTransform.position - transform.position).normalized;
 
         if (Vector3.Angle(transform.forward, playerTarget) < _angleView / 2)
         {
-            float diatance = Vector3.Distance(transform.position, _playerTransform.position);
+            float distance = Vector3.Distance(transform.position, _playerTransform.position);
 
-            if (diatance <= _radiusView)
+            if (distance <= _radiusView)
             {
-                if (!Physics.Raycast(transform.position, playerTarget, diatance, _obstacleMask)) _canSeePlayer = true;
-                else _canSeePlayer = false;
+                if (!Physics.Raycast(transform.position, playerTarget, distance, _obstacleMask)) _canSeePlayer = true;
+
+                else
+                    _canSeePlayer = false;
             }
-            else _canSeePlayer = false;
+            else
+                _canSeePlayer = false;
         }
-        else _canSeePlayer = false;
+        else
+            _canSeePlayer = false;
+    }
+
+    private void UpdateRotationToPlayer()
+    {
+        Vector3 playerDirection = (_playerTransform.position - transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(playerDirection.x, 0, playerDirection.z));
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
     }
     private void AttackPlayer()
     {
+        _audioSource.enabled = true;
         _distanceToPlayer = Vector3.Distance(transform.position, _playerTransform.position);
 
-        _audioSource.enabled = true;
-
-        _agent.SetDestination(_playerTransform.position);
         _agent.speed = _runSpeed;
 
         if (_distanceToPlayer < _agent.stoppingDistance + _attackRangePlus)
         {
+            UpdateRotationToPlayer();
             _audioSource.enabled = false;
             _agent.speed = 0f;
             StartCoroutine(ChangeAnimation(true));
@@ -115,6 +130,13 @@ public class AiZombie : MonoBehaviour
         _canSeePlayer = true;
         _isFirstAttackDelay = true;
     }
+    private IEnumerator SmoothSetDestonation()
+    {
+        yield return new WaitForSeconds(1f);
+        _agent.SetDestination(_playerTransform.position);
+    }
+
+
     private IEnumerator ChangeAnimation(bool state)
     {
         yield return new WaitForSeconds(_changeAnimDelay);
