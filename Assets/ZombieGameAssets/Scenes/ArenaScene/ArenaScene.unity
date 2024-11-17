@@ -30633,6 +30633,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Zombie3
       objectReference: {fileID: 0}
+    - target: {fileID: 7611554779965751666, guid: 999ed6de3fba3e2448f92655d1c59356,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8012714356462071620, guid: 999ed6de3fba3e2448f92655d1c59356,
         type: 3}
       propertyPath: _playerTransform
