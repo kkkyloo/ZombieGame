@@ -36,7 +36,7 @@ public class MovePlayer : MonoBehaviour
     {
         _isGrounded = Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _ground);
     }
-    private void FixedUpdate() // было update. при большом маленьком фпс можно было забраться на склон
+    private void FixedUpdate() // пїЅпїЅпїЅпїЅ update. пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     {
         _horizontalInput = Input.GetAxisRaw("Horizontal");
         _verticalInput = Input.GetAxisRaw("Vertical");
@@ -47,8 +47,8 @@ public class MovePlayer : MonoBehaviour
         MyInput();
         SpeedControl();
 
-        if (_isGrounded) _rigidBody.drag = _groundDrag;
-        else _rigidBody.drag = 0;
+        if (_isGrounded) _rigidBody.linearDamping = _groundDrag;
+        else _rigidBody.linearDamping = 0;
 
         Move();
     }
@@ -79,7 +79,7 @@ public class MovePlayer : MonoBehaviour
         {
             _rigidBody.AddForce(_moveSpeed * 20f * GetSlopeMoveDirection(), ForceMode.Force);
 
-            if (_rigidBody.velocity.y > 0)
+            if (_rigidBody.linearVelocity.y > 0)
                 _rigidBody.AddForce(Vector3.down * 80f, ForceMode.Force);
         }
 
@@ -96,17 +96,17 @@ public class MovePlayer : MonoBehaviour
     }
     private void SpeedControl()
     {
-        Vector3 flatVel = new(_rigidBody.velocity.x, 0f, _rigidBody.velocity.z);
+        Vector3 flatVel = new(_rigidBody.linearVelocity.x, 0f, _rigidBody.linearVelocity.z);
 
         if (flatVel.magnitude > _moveSpeed)
         {
             Vector3 limitedVel = flatVel.normalized * _moveSpeed;
-            _rigidBody.velocity = new Vector3(limitedVel.x, _rigidBody.velocity.y, limitedVel.z);
+            _rigidBody.linearVelocity = new Vector3(limitedVel.x, _rigidBody.linearVelocity.y, limitedVel.z);
         }
     }
     private void Jump()
     {
-        _rigidBody.velocity = new Vector3(_rigidBody.velocity.x, 0f, _rigidBody.velocity.z);
+        _rigidBody.linearVelocity = new Vector3(_rigidBody.linearVelocity.x, 0f, _rigidBody.linearVelocity.z);
         _rigidBody.AddForce(transform.up * _jumpForce, ForceMode.Impulse);
     }
     public void OnJumpButtonDown() => _isJumpPress = true;
