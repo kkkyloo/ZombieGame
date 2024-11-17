@@ -21,6 +21,10 @@ public class SwitchGun : MonoBehaviour
         {
             SwitchWeapon(2);
         }
+        else if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            SwitchWeapon(3);
+        }
     }
 
     void SwitchWeapon(int index)

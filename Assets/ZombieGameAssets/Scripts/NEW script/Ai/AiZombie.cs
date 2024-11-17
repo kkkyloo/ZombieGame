@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
-public class AiZombie : MonoBehaviour
+public class AiZombie : MonoBehaviour, IDamageable
 {
     [Header("AI Settings")]
     [SerializeField] private float _hp = 99;

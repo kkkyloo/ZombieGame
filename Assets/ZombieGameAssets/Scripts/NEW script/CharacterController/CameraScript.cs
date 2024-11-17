@@ -25,14 +25,14 @@ public class CameraScript : MonoBehaviour
 
         Actions.OnMove += AngleChange;
         Actions.GunShoot += Impact;
-        Actions.GetEnemyHit += GetDamage;
+        Actions.GetEnemyHit += TakeDamage;
         Actions.AxeShoot += AxeImpact;
     }
     private void OnDisable()
     {
         Actions.OnMove -= AngleChange;
         Actions.GunShoot -= Impact;
-        Actions.GetEnemyHit -= GetDamage;
+        Actions.GetEnemyHit -= TakeDamage;
         Actions.AxeShoot -= AxeImpact;
     }
     private void Update()
@@ -69,7 +69,7 @@ public class CameraScript : MonoBehaviour
             _yRotation + Random.Range(-_angleImpact, _angleImpact),
             currentAngleTilt + Random.Range(-_angleImpact, _angleImpact)));
     }
-    private void GetDamage(int damage)
+    private void TakeDamage(float damage)
     {
         if (damage < 20)
             currentAngleTilt = Mathf.Lerp(currentAngleTilt, _angleDamage[Random.Range(0, 2)], Time.deltaTime * 7);
