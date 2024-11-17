@@ -4,7 +4,7 @@ using UnityEngine.AI;
 public class AiZombie : MonoBehaviour
 {
     [Header("AI Settings")]
-    [SerializeField] private float _hp = 100;
+    [SerializeField] private float _hp = 99;
     [SerializeField] private Transform _playerTransform;
     [SerializeField] private LayerMask _playerMask;
     [SerializeField] private LayerMask _obstacleMask;
