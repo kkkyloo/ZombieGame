@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class Ak47Script : MonoBehaviour
+public class Ak47Script : MonoBehaviour, IWeapon
 {
     [Header("Gun Settings")]
     [SerializeField] private float _damage = 15;
@@ -72,21 +72,6 @@ public class Ak47Script : MonoBehaviour
             return;
         }
 
-
-
-
-
-
-
-        if (Input.GetButton("Fire1") && _currentAmmo > 0)
-        {
-            _isAttackPressed = true;
-            _animator.SetBool("canFire", true);
-
-        }
-        else if (Input.GetButtonDown("Fire1") && _reserveAmmo == 0 && _currentAmmo == 0) akSound.PlayOneShot(_noAmmoSound, _noAmmoSoundVolume);
-
-
         if (Input.GetKey(KeyCode.LeftShift) && !_isAttackPressed)
         {
             _animator.SetBool("canFire", false);
@@ -97,7 +82,6 @@ public class Ak47Script : MonoBehaviour
         else
         {
             _animator.SetBool("canRun", false);
-
         }
 
     }
@@ -106,6 +90,25 @@ public class Ak47Script : MonoBehaviour
         if (_isAttackPressed) HandleAttack();
         else if (!_isAttacking && !_isReloading && !running) ChangeAnimationState(IDLE);
     }
+
+
+    public void Attack()
+    {
+        if(_currentAmmo > 0)
+        {
+            _isAttackPressed = true;
+            _animator.SetBool("canFire", true);
+
+
+        }
+        else if (Input.GetButtonDown("Fire1") && _reserveAmmo == 0 && _currentAmmo == 0) akSound.PlayOneShot(_noAmmoSound, _noAmmoSoundVolume);
+
+
+    }
+
+
+
+
     private IEnumerator ReloadGun()
     {
         akSound.PlayOneShot(_reloadSound, _reloadSoundVolume);

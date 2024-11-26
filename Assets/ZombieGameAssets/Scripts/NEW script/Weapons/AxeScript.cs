@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-public class AxeScript : MonoBehaviour
+public class AxeScript : MonoBehaviour, IWeapon
 {
     [Header("Gun Settings")]
     [SerializeField] private int _damage = 65;
@@ -51,14 +51,10 @@ public class AxeScript : MonoBehaviour
         _attackDelay = clips[3].length;
     }
     private void OnEnable() => ChangeAnimationState(_idleAnimation);
-    private void Update()
+
+    public void Attack()
     {
-        if (Input.GetButtonDown("Fire1") && _animator.GetCurrentAnimatorStateInfo(0).IsName(_idleAnimation)) // && _axe.activeSelf
-            Attack();
-    }
-    private void Attack()
-    {
-        if (!_isAttacking)
+        if (!_isAttacking && _animator.GetCurrentAnimatorStateInfo(0).IsName(_idleAnimation))
         {
             
             _isAttacking = true;

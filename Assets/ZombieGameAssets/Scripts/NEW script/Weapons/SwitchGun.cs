@@ -36,5 +36,6 @@ public class SwitchGun : MonoBehaviour
 
         weapons[index].SetActive(true);
         currentWeaponIndex = index;
+        CharacterWeapons.SelectedWeaponId = index;
     }
 }

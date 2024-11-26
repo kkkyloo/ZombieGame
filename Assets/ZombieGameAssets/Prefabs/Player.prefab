@@ -234,7 +234,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &236903731779991366
 Transform:
   m_ObjectHideFlags: 0
@@ -18103,8 +18103,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4650331113099067127}
   - {fileID: 236903731779991366}
+  - {fileID: 4650331113099067127}
   - {fileID: 4245969019856641616}
   - {fileID: 1054851199146000215}
   m_Father: {fileID: 292587394563705886}
@@ -18172,8 +18172,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weapons:
-  - {fileID: 8164173999488702256}
   - {fileID: 243201280130912142}
+  - {fileID: 8164173999488702256}
   - {fileID: 4113970669079778653}
   - {fileID: 4640366375255370251}
 --- !u!1 &7062332604508205271
@@ -19517,7 +19517,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4650331113099067127
 Transform:
   m_ObjectHideFlags: 0

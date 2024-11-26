@@ -2,7 +2,12 @@ using UnityEngine;
 public class MovePlayer : MonoBehaviour
 {
     [Header("Movement")]
-    [SerializeField] private float _moveSpeed = 9;
+    [SerializeField] private float _moveSpeed = 9f;
+    [SerializeField] private float _walkSpeed = 9f;
+    [SerializeField] private float _runSpeed = 15f;
+
+
+
     [SerializeField] private float _groundDrag = 5;
     [SerializeField] private float _jumpForce = 6.3f;
     [SerializeField] private float _jumpCooldown = 0.25f;
@@ -36,7 +41,7 @@ public class MovePlayer : MonoBehaviour
     {
         _isGrounded = Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _ground);
     }
-    private void FixedUpdate() // ���� update. ��� ������� ��������� ��� ����� ���� ��������� �� �����
+    private void FixedUpdate()
     {
         _horizontalInput = Input.GetAxisRaw("Horizontal");
         _verticalInput = Input.GetAxisRaw("Vertical");
@@ -60,8 +65,18 @@ public class MovePlayer : MonoBehaviour
             _isGrounded = Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _ground);
 
         }
-
         else OnJumpButtonUp();
+
+
+        if (Input.GetKey(KeyCode.LeftShift) && !Input.GetMouseButton(0))
+        {
+            _moveSpeed = _runSpeed;
+        }
+        else
+        {
+            _moveSpeed = _walkSpeed;
+        }
+
 
         if (_isJumpPress && _isReadyToJump && _isGrounded)
         {
@@ -86,7 +101,7 @@ public class MovePlayer : MonoBehaviour
         if (_isGrounded)
         {
             _rigidBody.AddForce(_moveSpeed * 10f * _moveDirection.normalized, ForceMode.Force);
-         //   Actions.OnMove(_horizontalInput, _verticalInput);
+            //   Actions.OnMove(_horizontalInput, _verticalInput);
         }
 
         else if (!_isGrounded) _rigidBody.AddForce(_airMultiplier * _moveSpeed * 10f * _moveDirection.normalized, ForceMode.Force);

@@ -650,6 +650,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8177290991734649829}
   m_LocalEulerAnglesHint: {x: 17.89, y: -25.14, z: 0}
+--- !u!1 &219125192 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7014765377769420390, guid: 13c45609c33c0a04f8da63127a7c39a8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1703576653}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &219125198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 219125192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4e5af6a969c98f48a34753c9a3a0739, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxDistanceToTarget: 250
 --- !u!4 &257279379 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5722125051118185668, guid: 13c45609c33c0a04f8da63127a7c39a8,
@@ -1909,6 +1928,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: bayonetOnFloor
       objectReference: {fileID: 0}
+    - target: {fileID: 979249271759001870, guid: bc3bc1730735dfc4dbc54791f063061f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8147041993148237657, guid: bc3bc1730735dfc4dbc54791f063061f,
         type: 3}
       propertyPath: m_Radius
@@ -2247,6 +2271,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: grenadeOnFloor
+      objectReference: {fileID: 0}
+    - target: {fileID: 4406719240047034289, guid: adc2327f09646a648803b669518bc706,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3275,6 +3304,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 272158059829211134, guid: 13c45609c33c0a04f8da63127a7c39a8,
+        type: 3}
+      propertyPath: _runSpeed
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 1518667530837782464, guid: 13c45609c33c0a04f8da63127a7c39a8,
         type: 3}
       propertyPath: m_Name
@@ -3338,7 +3372,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7014765377769420390, guid: 13c45609c33c0a04f8da63127a7c39a8,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 219125198}
   m_SourcePrefab: {fileID: 100100000, guid: 13c45609c33c0a04f8da63127a7c39a8, type: 3}
 --- !u!1 &1739704419
 GameObject:
@@ -12278,7 +12316,7 @@ PrefabInstance:
     - target: {fileID: 7611554779965751666, guid: 999ed6de3fba3e2448f92655d1c59356,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8012714356462071620, guid: 999ed6de3fba3e2448f92655d1c59356,
         type: 3}
