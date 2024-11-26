@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+
 public class Ak47Script : MonoBehaviour
 {
     [Header("Gun Settings")]
@@ -36,7 +37,9 @@ public class Ak47Script : MonoBehaviour
     public static Animator _animator;
     private string _currentAnimation;
     public static string IDLE;
-    private string FIRE;
+
+    private bool running = false;
+
     private string reloadAnim;
 
     private bool _isAttackPressed;
@@ -56,7 +59,6 @@ public class Ak47Script : MonoBehaviour
 
         AnimationClip[] clips = _animator.runtimeAnimatorController.animationClips;
         IDLE = clips[0].name.ToString();
-        FIRE = clips[1].name.ToString();
         reloadAnim = clips[5].name.ToString();
     }
     private void Update()
@@ -70,14 +72,39 @@ public class Ak47Script : MonoBehaviour
             return;
         }
 
-        if (Input.GetButton("Fire1") && _currentAmmo > 0) _isAttackPressed = true;
+
+
+
+
+
+
+        if (Input.GetButton("Fire1") && _currentAmmo > 0)
+        {
+            _isAttackPressed = true;
+            _animator.SetBool("canFire", true);
+
+        }
         else if (Input.GetButtonDown("Fire1") && _reserveAmmo == 0 && _currentAmmo == 0) akSound.PlayOneShot(_noAmmoSound, _noAmmoSoundVolume);
+
+
+        if (Input.GetKey(KeyCode.LeftShift) && !_isAttackPressed)
+        {
+            _animator.SetBool("canFire", false);
+
+            _animator.SetBool("canRun", true);
+            running = true;
+        }
+        else
+        {
+            _animator.SetBool("canRun", false);
+
+        }
 
     }
     private void FixedUpdate()
     {
         if (_isAttackPressed) HandleAttack();
-        else if (!_isAttacking && !_isReloading) ChangeAnimationState(IDLE);
+        else if (!_isAttacking && !_isReloading && !running) ChangeAnimationState(IDLE);
     }
     private IEnumerator ReloadGun()
     {
@@ -106,6 +133,7 @@ public class Ak47Script : MonoBehaviour
         Actions.GunShoot();
         PlayAttackAnimation();
         _isAttackPressed = false;
+        _animator.SetBool("canFire", false);
 
         if (!_isAttacking)
         {
@@ -127,7 +155,10 @@ public class Ak47Script : MonoBehaviour
     private void PlayAttackAnimation()
     {
         _particleFlash.Play();
-        ChangeAnimationState(FIRE);
+
+        _animator.SetTrigger("fire");
+
+        //ChangeAnimationState(FIRE);
     }
     private void HandleHitResult(RaycastHit hit)
     {
@@ -135,7 +166,7 @@ public class Ak47Script : MonoBehaviour
         {
             targets.TakeDamage(GetDamageByRange(hit.distance));
 
-           // akSound.PlayOneShot(_enemyHitSounds[ChangeHitSound()], _enemyHitSoundVolume);
+            // akSound.PlayOneShot(_enemyHitSounds[ChangeHitSound()], _enemyHitSoundVolume);
             AudioSource.PlayClipAtPoint(_enemyHitSounds[ChangeHitSound()], hit.transform.position, _enemyHitSoundVolume);
 
             // Actions.OnHitEnemy(GetDamageByRange(hit.distance), hit.collider.gameObject);
