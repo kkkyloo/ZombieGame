@@ -1,17 +1,17 @@
 using UnityEngine;
 
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : MonoBehaviour, IDamageable
 {
-    [SerializeField] private int _hp = 100;
+    [SerializeField] private float _hp = 100;
     private void OnEnable()
     {
-        Actions.GetEnemyHit += Damage;
+        Actions.GetEnemyHit += TakeDamage;
     }
     private void OnDisable()
     {
-        Actions.GetEnemyHit -= Damage;
+        Actions.GetEnemyHit -= TakeDamage;
     }
-    private void Damage(int damage)
+    public void TakeDamage(float damage)
     {
         if (_hp - damage > 0) _hp -= damage;
         else Die();
