@@ -74,7 +74,15 @@ public class Ak47Script : MonoBehaviour, IWeapon
             return;
         }
 
-        if (Input.GetKey(KeyCode.LeftShift) && !_isAttackPressed)
+        if (Input.GetKey(KeyCode.R))
+        {
+            ForceReload();
+        }
+
+
+
+
+        if (MovePlayer.IsRunning && !_isAttackPressed)
         {
             _animator.SetBool("canFire", false);
 
@@ -137,6 +145,17 @@ public class Ak47Script : MonoBehaviour, IWeapon
             _isReloading = true;
         }
     }
+
+    public void ForceReload()
+    {
+        if (!_isReloading && _reserveAmmo > 0 && _currentAmmo < 30)
+        {
+            StartCoroutine(ReloadGun());
+            _isReloading = true;
+        }
+    }
+
+
     private void HandleAttack()
     {
         Actions.GunShoot();

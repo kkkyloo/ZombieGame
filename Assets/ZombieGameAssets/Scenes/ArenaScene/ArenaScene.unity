@@ -3435,66 +3435,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 272158059829211134, guid: 13c45609c33c0a04f8da63127a7c39a8,
+        type: 3}
+      propertyPath: _rollCooldown
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 272158059829211134, guid: 13c45609c33c0a04f8da63127a7c39a8,
+        type: 3}
+      propertyPath: _rollDuration
+      value: 1.2
+      objectReference: {fileID: 0}
     - target: {fileID: 1518667530837782464, guid: 13c45609c33c0a04f8da63127a7c39a8,
         type: 3}
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: hudGrene
-      value: 
-      objectReference: {fileID: 1034376919}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: hudKnife
-      value: 
-      objectReference: {fileID: 35509620}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: hudWeapon
-      value: 
-      objectReference: {fileID: 1941975463}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: weapons.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: hudElements.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: _hudElements.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: _weaponSprites.Array.size
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: 'hudElements.Array.data[0]'
-      value: 
-      objectReference: {fileID: 1941975463}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: 'hudElements.Array.data[1]'
-      value: 
-      objectReference: {fileID: 35509620}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: 'hudElements.Array.data[2]'
-      value: 
-      objectReference: {fileID: 1034376919}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: 'hudElements.Array.data[3]'
-      value: 
-      objectReference: {fileID: 2097705790}
     - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
         type: 3}
       propertyPath: '_hudElements.Array.data[0]'
@@ -3510,76 +3465,6 @@ PrefabInstance:
       propertyPath: '_hudElements.Array.data[2]'
       value: 
       objectReference: {fileID: 1034376919}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: '_hudElements.Array.data[3]'
-      value: 
-      objectReference: {fileID: 2097705790}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: '_weaponSprites.Array.data[0]'
-      value: 
-      objectReference: {fileID: 21300000, guid: 14e17fc7f3ca1d0468fc69ffa41222d9,
-        type: 3}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: '_weaponSprites.Array.data[1]'
-      value: 
-      objectReference: {fileID: 21300000, guid: 1fca74d7e5999894fbac92148d56fd7e,
-        type: 3}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: '_weaponSprites.Array.data[2]'
-      value: 
-      objectReference: {fileID: 21300000, guid: 6681459ae50e0e9449d528f7058121a6,
-        type: 3}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: '_weaponSprites.Array.data[3]'
-      value: 
-      objectReference: {fileID: 21300000, guid: 8cbf524868bf38c4f8e377bceac9635f,
-        type: 3}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: '_weaponSprites.Array.data[4]'
-      value: 
-      objectReference: {fileID: 21300000, guid: e37f44c9d9c784f4684862debf2fe913,
-        type: 3}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: '_weaponSprites.Array.data[5]'
-      value: 
-      objectReference: {fileID: 21300000, guid: fa236296740280c41b15c785e734158b,
-        type: 3}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: '_weaponSprites.Array.data[6]'
-      value: 
-      objectReference: {fileID: 21300000, guid: c2cb3fdf224c3e64e928a5b761f181b5,
-        type: 3}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: '_weaponSprites.Array.data[7]'
-      value: 
-      objectReference: {fileID: 21300000, guid: d3c15605cf507074ea011f692a424c87,
-        type: 3}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: '_weaponSprites.Array.data[8]'
-      value: 
-      objectReference: {fileID: 21300000, guid: 41edaef393abfc44aa37683c800ab213,
-        type: 3}
-    - target: {fileID: 3803297118714961891, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: '_weaponSprites.Array.data[9]'
-      value: 
-      objectReference: {fileID: 21300000, guid: 89729ee84de689d4a9e0494172631d19,
-        type: 3}
-    - target: {fileID: 4640366375255370251, guid: 13c45609c33c0a04f8da63127a7c39a8,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5722125051118185668, guid: 13c45609c33c0a04f8da63127a7c39a8,
         type: 3}
       propertyPath: m_LocalPosition.x

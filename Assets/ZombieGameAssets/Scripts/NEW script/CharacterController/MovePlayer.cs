@@ -1,9 +1,10 @@
+using System.Collections;
 using UnityEngine;
 public class MovePlayer : MonoBehaviour
 {
     [Header("Movement")]
     [SerializeField] private float _moveSpeed = 9f;
-    [SerializeField] private float _walkSpeed = 9f;
+    public static float _walkSpeed = 9f;
     [SerializeField] private float _runSpeed = 15f;
 
 
@@ -31,6 +32,28 @@ public class MovePlayer : MonoBehaviour
     private bool _isReadyToJump;
     private bool _isGrounded;
     private bool _isJumpPress = false;
+
+
+    public static bool IsRunning = false;
+
+
+
+
+
+    [SerializeField] private float _rollSpeed = 12f; // Скорость подката
+    [SerializeField] private float _rollDuration = 0.5f; // Длительность подката
+    [SerializeField] private float _rollCooldown = 1f; // Время восстановления подката
+    [SerializeField] private CapsuleCollider _capsuleCollider;
+
+    private bool _isRolling = false;
+    private bool _canRoll = true;
+
+
+
+
+
+
+
     private void Awake()
     {
         _rigidBody = GetComponent<Rigidbody>();
@@ -43,11 +66,67 @@ public class MovePlayer : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        SpeedControl();
+
+        if (_isRolling)
+        {
+            IsRunning = false;
+
+            _rigidBody.linearDamping = 0;
+
+            return;
+        }
+
+        if (Input.GetKey(KeyCode.LeftControl) && !_isRolling) Chrouching();
+        else UnChrouch();
+
+
+
         _horizontalInput = Input.GetAxisRaw("Horizontal");
         _verticalInput = Input.GetAxisRaw("Vertical");
 
+        if (Input.GetKeyDown(KeyCode.C) && !_isRolling && !Input.GetKey(KeyCode.LeftControl))
+        {
+            if (_horizontalInput != 0 || _verticalInput != 0)
+            {
+                _rigidBody.linearDamping = 0;
+
+                StartCoroutine(Roll());
+                return;
+            }
+        }
+
+
         if (_horizontalInput != 0 || _verticalInput != 0)
             _isGrounded = Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _ground);
+
+
+        if (Input.GetKey(KeyCode.LeftShift) && _horizontalInput != 0 || Input.GetKey(KeyCode.LeftShift) && _verticalInput != 0)
+        {
+            if (!Input.GetKey(KeyCode.LeftControl))
+            {
+                IsRunning = true;
+
+            }
+            else
+            {
+                IsRunning = false;
+
+            }
+        }
+        else
+        {
+            IsRunning = false;
+        }
+
+
+
+
+
+
+
+
+
 
         MyInput();
         SpeedControl();
@@ -57,6 +136,61 @@ public class MovePlayer : MonoBehaviour
 
         Move();
     }
+
+
+    private void Chrouching()
+    {
+        _walkSpeed = 4;
+
+        IsRunning = false;
+        _capsuleCollider.height = 1f;
+    }
+    private void UnChrouch()
+    {
+        _walkSpeed = 9;
+
+        _capsuleCollider.height = 2f;
+    }
+
+
+
+
+
+    private IEnumerator Roll()
+    {
+
+        _canRoll = false; // Не даем катиться снова, пока идет подкат
+        _isRolling = true;
+
+        _capsuleCollider.height = 1f; // Уменьшаем капсулу
+
+        // Направление движения во время подката
+        _moveDirection = _orientation.forward;
+
+        float startTime = Time.time; // Запоминаем время начала подката
+
+        // Применяем силу на протяжении всего времени подката
+        while (Time.time - startTime < _rollDuration)
+        {
+            Debug.Log("roll");
+
+            _rigidBody.AddForce(_rollSpeed  * _moveDirection, ForceMode.Force);
+            yield return null; // Ждем до следующего кадра
+        }
+
+        // Завершаем подкат, восстанавливаем капсулу
+        _capsuleCollider.height = 2f;
+
+        _isRolling = false;
+
+        // Восстановление возможности катиться
+        yield return new WaitForSeconds(_rollCooldown);
+        _canRoll = true;
+    }
+
+
+
+
     private void MyInput()
     {
         if (Input.GetKey(KeyCode.Space))
@@ -68,7 +202,7 @@ public class MovePlayer : MonoBehaviour
         else OnJumpButtonUp();
 
 
-        if (Input.GetKey(KeyCode.LeftShift) && !Input.GetMouseButton(0))
+        if (Input.GetKey(KeyCode.LeftShift) && !Input.GetMouseButton(0) && !Input.GetKey(KeyCode.LeftControl))
         {
             _moveSpeed = _runSpeed;
         }

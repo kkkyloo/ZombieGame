@@ -1897,7 +1897,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 8
-  _walkSpeed: 9
   _runSpeed: 10
   _groundDrag: 5
   _jumpForce: 6.3
@@ -1909,6 +1908,10 @@ MonoBehaviour:
     m_Bits: 1024
   _orientation: {fileID: 6645995560943883412}
   _maxSlopeAngle: 0
+  _rollSpeed: 80
+  _rollDuration: 1
+  _rollCooldown: 1
+  _capsuleCollider: {fileID: 4376518287955085108}
 --- !u!114 &2525973949923124436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14960,7 +14963,7 @@ MonoBehaviour:
   attackDelay: 0.45
   range: 40
   MaxAmmo: 12
-  currentAmmo: 4
+  _currentAmmo: 4
   impact: {fileID: 8300000, guid: 08cfac39e386dbd499d97719ca6a3d71, type: 3}
   reload: {fileID: 8300000, guid: de1f39e91f35b164eb22e337a34fd824, type: 3}
   noAmmo: {fileID: 0}
@@ -15435,7 +15438,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1054851199146000215
 Transform:
   m_ObjectHideFlags: 0
@@ -18174,15 +18177,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8f423a22e468874ca77171868f6be0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weapons:
-  - {fileID: 243201280130912142}
-  - {fileID: 8164173999488702256}
-  - {fileID: 4113970669079778653}
-  - {fileID: 4640366375255370251}
-  hudWeapon: {fileID: 0}
-  hudKnife: {fileID: 0}
-  hudGrene: {fileID: 0}
-  weaponSprites:
+  _hudElements:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  _weaponSprites:
   - {fileID: 21300000, guid: 14e17fc7f3ca1d0468fc69ffa41222d9, type: 3}
   - {fileID: 21300000, guid: 1fca74d7e5999894fbac92148d56fd7e, type: 3}
   - {fileID: 21300000, guid: 6681459ae50e0e9449d528f7058121a6, type: 3}
@@ -20607,6 +20606,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2338593912187567576}
   - component: {fileID: 4376518287955085108}
+  - component: {fileID: 5188890142885064594}
   m_Layer: 6
   m_Name: PlayerObj
   m_TagString: Untagged
@@ -20648,10 +20648,23 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5436558
-  m_Height: 2.0491467
+  m_Radius: 0.5
+  m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 0.024573326, z: 0.024457991}
+  m_Center: {x: 0, y: 0.1, z: 0}
+--- !u!114 &5188890142885064594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8751214212389508644}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86dd0c1ea6b8c7b40bdfc8da92a5e07f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _moveSpeed: 9
 --- !u!1 &8794608776150603593
 GameObject:
   m_ObjectHideFlags: 0
