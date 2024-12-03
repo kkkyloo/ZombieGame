@@ -67,6 +67,8 @@ public class Ak47Script : MonoBehaviour, IWeapon
 
         if (_currentAmmo == 0 && _reserveAmmo > 0)
         {
+            SwitchGun.CanSwitch = false;
+
             StartCoroutine(ReloadGun());
             _isReloading = true;
             return;
@@ -94,7 +96,9 @@ public class Ak47Script : MonoBehaviour, IWeapon
 
     public void Attack()
     {
-        if(_currentAmmo > 0)
+        SwitchGun.CanSwitch = false;
+
+        if (_currentAmmo > 0)
         {
             _isAttackPressed = true;
             _animator.SetBool("canFire", true);
@@ -122,6 +126,8 @@ public class Ak47Script : MonoBehaviour, IWeapon
 
         _isReloading = false;
         ChangeAnimationState(IDLE);
+        SwitchGun.CanSwitch = true;
+
     }
     private void ReloadDown()
     {
@@ -154,6 +160,9 @@ public class Ak47Script : MonoBehaviour, IWeapon
                 HandleHitResult(hit);
             }
         }
+
+        SwitchGun.CanSwitch = true;
+
     }
     private void PlayAttackAnimation()
     {

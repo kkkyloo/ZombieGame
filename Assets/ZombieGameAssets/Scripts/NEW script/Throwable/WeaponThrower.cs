@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class WeaponThrower : MonoBehaviour
+public class WeaponThrower : MonoBehaviour, IWeapon
 {
     [Header("Settings")]
     [SerializeField] private int _currentAmmo = 3;
@@ -24,7 +24,8 @@ public class WeaponThrower : MonoBehaviour
         Actions.OnTakeWeapon -= ChangeWeapon;
     }
 
-    private void Update()
+
+    public void Attack()
     {
         if (Input.GetButtonDown("Fire1") && _currentAmmo > 0 && canThrow)
         {
@@ -79,4 +80,6 @@ public class WeaponThrower : MonoBehaviour
         _throwableObject = gameObject;
         _currentAmmo = 3;
     }
+
+
 }

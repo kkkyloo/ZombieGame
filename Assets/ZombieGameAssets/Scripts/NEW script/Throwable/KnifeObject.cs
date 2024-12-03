@@ -14,14 +14,19 @@ public class KnifeObject : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+
+
+
         if (_targetHit)
             return;
         else
             _targetHit = true;
 
         _rb.isKinematic = true;
-
-        collision.gameObject.GetComponent<IDamageable>().TakeDamage(_damage);
+        if (collision.transform.CompareTag("Enemy"))
+        {
+            collision.gameObject.GetComponent<IDamageable>().TakeDamage(_damage);
+        }
         transform.SetParent(collision.transform);
     }
 

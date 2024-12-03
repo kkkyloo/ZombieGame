@@ -24,7 +24,6 @@ public class CharacterWeapons : MonoBehaviour
 
     public void FireWeapons()
     {
-        Debug.Log(SelectedWeaponId);
         Weapons[SelectedWeaponId].Attack();
     }
 

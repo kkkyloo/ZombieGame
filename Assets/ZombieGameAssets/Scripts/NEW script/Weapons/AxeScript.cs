@@ -35,7 +35,7 @@ public class AxeScript : MonoBehaviour, IWeapon
 
     private bool _isAttacking;
     private bool _isSoundEnabled = true;
-    private bool _getHit = false;
+    //private bool _getHit = false;
     private void Awake()
     {
         _animator = GetComponent<Animator>();
@@ -58,6 +58,8 @@ public class AxeScript : MonoBehaviour, IWeapon
         {
             
             _isAttacking = true;
+            SwitchGun.CanSwitch = false;
+
             StartCoroutine(PerformAttack());
         }
     }
@@ -87,6 +89,8 @@ public class AxeScript : MonoBehaviour, IWeapon
         _isSoundEnabled = true;
         _isAttacking = false;
         ChangeAnimationState(_idleAnimation);
+        SwitchGun.CanSwitch = true;
+
     }
     private void ChangeAnimationState(string newAnimation)
     {
@@ -138,6 +142,6 @@ public class AxeScript : MonoBehaviour, IWeapon
     {
         yield return new WaitForSeconds(1f);
         targets.GetDamage = false;
-        _getHit = false;
+        //_getHit = false;
     }
 }

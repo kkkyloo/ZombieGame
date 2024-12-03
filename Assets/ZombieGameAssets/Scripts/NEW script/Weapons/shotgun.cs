@@ -1,13 +1,13 @@
 using System.Collections;
 using UnityEngine;
-public class Shootgun : MonoBehaviour
+public class Shootgun : MonoBehaviour, IWeapon
 {
     [Header("Gun Settings")]
     [SerializeField] private float damage = 51f;
     [SerializeField] private float attackDelay = 0.45f;
     [SerializeField] private float range = 40; // чем дальше, тем меньше урона (нужно хедшоты реализовать)
     [SerializeField] private int MaxAmmo = 12;
-    [SerializeField] private int currentAmmo = 4;
+    [SerializeField] private int _currentAmmo = 4;
 
     [Header("Audio")]
     [SerializeField] private AudioClip impact;
@@ -27,13 +27,13 @@ public class Shootgun : MonoBehaviour
     private GameObject fpsCam;
 
     [Header("Animation")]
-    public static Animator animator;
+    public static Animator _animator;
     private string currentAnimation;
     public static string IDLE;
     private string FIRE;
     private string reloadAnim;
 
-    private bool isAttackPressed;
+    private bool _isAttackPressed;
     private bool isAttacking;
     private bool isReloading = false;
 
@@ -43,10 +43,10 @@ public class Shootgun : MonoBehaviour
     private void Awake()
     {
         akSound = GetComponent<AudioSource>();
-        animator = GetComponent<Animator>();
+        _animator = GetComponent<Animator>();
         fpsCam = GameObject.FindWithTag("MainCamera");
 
-        AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
+        AnimationClip[] clips = _animator.runtimeAnimatorController.animationClips;
         IDLE = clips[0].name.ToString();
         FIRE = clips[3].name.ToString();
         reloadAnim = clips[4].name.ToString();
@@ -55,18 +55,26 @@ public class Shootgun : MonoBehaviour
     {
         if (isReloading) return;
 
-        if (currentAmmo == 0 && MaxAmmo > 0)
+        if (_currentAmmo == 0 && MaxAmmo > 0)
         {
             StartCoroutine(ReloadGun());
             isReloading = true;
             return;
         }
 
-        if (Input.GetButtonDown("Fire1") && currentAmmo > 0) isAttackPressed = true;
     }
+
+    public void Attack()
+    {
+        if (Input.GetButtonDown("Fire1") && _currentAmmo > 0)
+        {
+            _isAttackPressed = true;
+        }
+    }
+
     private void FixedUpdate()
     {
-        if (isAttackPressed) HandleAttack();
+        if (_isAttackPressed) HandleAttack();
         else if (!isAttacking && !isReloading) ChangeAnimationState(IDLE);
     }
     private IEnumerator ReloadGun()
@@ -76,9 +84,9 @@ public class Shootgun : MonoBehaviour
 
         yield return new WaitForSeconds(2);
 
-        int amountToWithdraw = Mathf.Min(30 - currentAmmo, MaxAmmo);
+        int amountToWithdraw = Mathf.Min(30 - _currentAmmo, MaxAmmo);
         MaxAmmo -= amountToWithdraw;
-        currentAmmo += amountToWithdraw;
+        _currentAmmo += amountToWithdraw;
 
         isReloading = false;
         ChangeAnimationState(IDLE);
@@ -93,10 +101,12 @@ public class Shootgun : MonoBehaviour
     }
     private void HandleAttack()
     {
+        SwitchGun.CanSwitch = false;
+
         Actions.GunShoot();
 
         PlayAttackAnimation();
-        isAttackPressed = false;
+        _isAttackPressed = false;
 
         if (!isAttacking)
         {
@@ -106,12 +116,15 @@ public class Shootgun : MonoBehaviour
 
             //AudioSource.PlayClipAtPoint(impact, new Vector3(5, 1, 2));
 
-            currentAmmo--;
+            _currentAmmo--;
 
             if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out RaycastHit hit, range))
             {
                 HandleHitResult(hit);
             }
+
+            SwitchGun.CanSwitch = true;
+
         }
     }
     private void PlayAttackAnimation()
@@ -142,7 +155,7 @@ public class Shootgun : MonoBehaviour
     {
         if (currentAnimation == newAnimation) return;
 
-        animator.Play(newAnimation);
+        _animator.Play(newAnimation);
         currentAnimation = newAnimation;
     }
     private void AttackComplete() // в зависимоти от eange урон
