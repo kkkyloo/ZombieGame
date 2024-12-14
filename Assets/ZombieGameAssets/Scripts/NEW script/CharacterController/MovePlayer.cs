@@ -36,7 +36,9 @@ public class MovePlayer : MonoBehaviour
 
     public static bool IsRunning = false;
 
+    public static bool moving = false;
 
+    public static bool rolling = false;
 
 
 
@@ -89,6 +91,8 @@ public class MovePlayer : MonoBehaviour
         {
             if (_horizontalInput != 0 || _verticalInput != 0)
             {
+                rolling = true;
+
                 _rigidBody.linearDamping = 0;
 
                 StartCoroutine(Roll());
@@ -98,7 +102,16 @@ public class MovePlayer : MonoBehaviour
 
 
         if (_horizontalInput != 0 || _verticalInput != 0)
+        {
+            moving = true;
             _isGrounded = Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _ground);
+
+        }
+        else
+        {
+            moving = false;
+
+        }
 
 
         if (Input.GetKey(KeyCode.LeftShift) && _horizontalInput != 0 || Input.GetKey(KeyCode.LeftShift) && _verticalInput != 0)
@@ -158,32 +171,26 @@ public class MovePlayer : MonoBehaviour
 
     private IEnumerator Roll()
     {
-
-        _canRoll = false; // Не даем катиться снова, пока идет подкат
+        _canRoll = false; 
         _isRolling = true;
 
-        _capsuleCollider.height = 1f; // Уменьшаем капсулу
+        _capsuleCollider.height = 1f; 
 
-        // Направление движения во время подката
         _moveDirection = _orientation.forward;
 
-        float startTime = Time.time; // Запоминаем время начала подката
+        float startTime = Time.time; 
 
-        // Применяем силу на протяжении всего времени подката
         while (Time.time - startTime < _rollDuration)
         {
-            Debug.Log("roll");
 
             _rigidBody.AddForce(_rollSpeed  * _moveDirection, ForceMode.Force);
-            yield return null; // Ждем до следующего кадра
+            yield return null; 
         }
 
-        // Завершаем подкат, восстанавливаем капсулу
         _capsuleCollider.height = 2f;
 
         _isRolling = false;
-
-        // Восстановление возможности катиться
+        rolling = false;
         yield return new WaitForSeconds(_rollCooldown);
         _canRoll = true;
     }

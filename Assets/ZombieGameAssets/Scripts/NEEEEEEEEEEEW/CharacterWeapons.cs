@@ -20,6 +20,9 @@ public class CharacterWeapons : MonoBehaviour
         {
             FireWeapons();
         }
+
+
+
     }
 
     public void FireWeapons()
