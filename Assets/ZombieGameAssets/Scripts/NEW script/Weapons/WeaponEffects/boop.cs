@@ -12,15 +12,20 @@ public class Boop : MonoBehaviour
     private Vector2 _inputMagnitude = Vector2.zero;
 
 
+    private void OnEnable()
+    {
+        Actions.GunShoot += StartHeadBob;
+        Actions.OnMove += CheckForHeadbobTrigger;
+    }
+    private void OnDisable()
+    {
+        Actions.GunShoot -= StartHeadBob;
+        Actions.OnMove -= CheckForHeadbobTrigger;
+    }
 
-
-    private void OnEnable() => Actions.OnMove += CheckForHeadbobTrigger;
-    private void OnDisable() => Actions.OnMove -= CheckForHeadbobTrigger;
     private void Awake() => _startPos = transform.localPosition;
     void Update()
     {
-        Debug.Log(Ak47Script.scope && MovePlayer.rolling);
-
         if (Ak47Script.scope && MovePlayer.rolling)
         {
 
@@ -31,7 +36,7 @@ public class Boop : MonoBehaviour
 
 
         if (Vector3.Distance(transform.localPosition, _startPos) > 0.01f || Ak47Script.scope && !MovePlayer.moving) StopHeadBob();
-        if (_inputMagnitude.magnitude > 0 || Input.GetMouseButton(0)) StartHeadBob();
+        if (_inputMagnitude.magnitude > 0) StartHeadBob();
     }
     private void StopHeadBob() => transform.localPosition = Vector3.Lerp(transform.localPosition, _startPos, _smooth * Time.deltaTime);
     private void CheckForHeadbobTrigger(float horizontalInput, float verticalInput) => _inputMagnitude = new Vector2(Mathf.Abs(horizontalInput), Mathf.Abs(verticalInput));

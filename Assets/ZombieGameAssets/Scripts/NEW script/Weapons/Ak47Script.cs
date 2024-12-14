@@ -40,7 +40,7 @@ public class Ak47Script : MonoBehaviour, IWeapon
 
     private bool running = false;
 
-    private string reloadAnim;
+    //private string reloadAnim;
 
     private bool _isAttackPressed;
     private bool _isAttacking;
@@ -59,7 +59,7 @@ public class Ak47Script : MonoBehaviour, IWeapon
 
         AnimationClip[] clips = _animator.runtimeAnimatorController.animationClips;
         IDLE = clips[0].name.ToString();
-        reloadAnim = clips[5].name.ToString();
+        //reloadAnim = clips[5].name.ToString();
     }
 
     public static bool scope = false;
@@ -141,7 +141,7 @@ public class Ak47Script : MonoBehaviour, IWeapon
     private IEnumerator ReloadGun()
     {
         akSound.PlayOneShot(_reloadSound, _reloadSoundVolume);
-        ChangeAnimationState(reloadAnim);
+        _animator.SetTrigger("reload");
 
         yield return new WaitForSeconds(2);
 

@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem.EnhancedTouch;
 public class MovePlayer : MonoBehaviour
 {
     [Header("Movement")]
@@ -66,6 +67,9 @@ public class MovePlayer : MonoBehaviour
     {
         _isGrounded = Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _ground);
     }
+
+    bool crouch = false;
+
     private void FixedUpdate()
     {
         SpeedControl();
@@ -73,8 +77,6 @@ public class MovePlayer : MonoBehaviour
         if (_isRolling)
         {
             IsRunning = false;
-
-            _rigidBody.linearDamping = 0;
 
             return;
         }
@@ -87,14 +89,14 @@ public class MovePlayer : MonoBehaviour
         _horizontalInput = Input.GetAxisRaw("Horizontal");
         _verticalInput = Input.GetAxisRaw("Vertical");
 
-        if (Input.GetKeyDown(KeyCode.C) && !_isRolling && !Input.GetKey(KeyCode.LeftControl))
+        if (Input.GetKeyDown(KeyCode.C) && !_isRolling && !crouch) //&& !Input.GetKey(KeyCode.LeftControl)
         {
             if (_horizontalInput != 0 || _verticalInput != 0)
             {
                 rolling = true;
 
                 _rigidBody.linearDamping = 0;
-
+                Debug.LogWarning("roll");
                 StartCoroutine(Roll());
                 return;
             }
@@ -153,6 +155,7 @@ public class MovePlayer : MonoBehaviour
 
     private void Chrouching()
     {
+        crouch = true;
         _walkSpeed = 4;
 
         IsRunning = false;
@@ -160,6 +163,7 @@ public class MovePlayer : MonoBehaviour
     }
     private void UnChrouch()
     {
+        crouch = false;
         _walkSpeed = 9;
 
         _capsuleCollider.height = 2f;
@@ -171,20 +175,20 @@ public class MovePlayer : MonoBehaviour
 
     private IEnumerator Roll()
     {
-        _canRoll = false; 
+        _canRoll = false;
         _isRolling = true;
 
-        _capsuleCollider.height = 1f; 
+        _capsuleCollider.height = 1f;
 
         _moveDirection = _orientation.forward;
 
-        float startTime = Time.time; 
+        float startTime = Time.time;
 
         while (Time.time - startTime < _rollDuration)
         {
 
-            _rigidBody.AddForce(_rollSpeed  * _moveDirection, ForceMode.Force);
-            yield return null; 
+            _rigidBody.AddForce(_rollSpeed * _moveDirection, ForceMode.Force);
+            yield return null;
         }
 
         _capsuleCollider.height = 2f;
