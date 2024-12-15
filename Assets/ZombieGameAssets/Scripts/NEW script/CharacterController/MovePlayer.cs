@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem.EnhancedTouch;
 public class MovePlayer : MonoBehaviour
 {
     [Header("Movement")]
@@ -36,7 +37,9 @@ public class MovePlayer : MonoBehaviour
 
     public static bool IsRunning = false;
 
+    public static bool moving = false;
 
+    public static bool rolling = false;
 
 
 
@@ -64,6 +67,9 @@ public class MovePlayer : MonoBehaviour
     {
         _isGrounded = Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _ground);
     }
+
+    bool crouch = false;
+
     private void FixedUpdate()
     {
         SpeedControl();
@@ -71,8 +77,6 @@ public class MovePlayer : MonoBehaviour
         if (_isRolling)
         {
             IsRunning = false;
-
-            _rigidBody.linearDamping = 0;
 
             return;
         }
@@ -85,12 +89,14 @@ public class MovePlayer : MonoBehaviour
         _horizontalInput = Input.GetAxisRaw("Horizontal");
         _verticalInput = Input.GetAxisRaw("Vertical");
 
-        if (Input.GetKeyDown(KeyCode.C) && !_isRolling && !Input.GetKey(KeyCode.LeftControl))
+        if (Input.GetKeyDown(KeyCode.C) && !_isRolling && !crouch) //&& !Input.GetKey(KeyCode.LeftControl)
         {
             if (_horizontalInput != 0 || _verticalInput != 0)
             {
-                _rigidBody.linearDamping = 0;
+                rolling = true;
 
+                _rigidBody.linearDamping = 0;
+                Debug.LogWarning("roll");
                 StartCoroutine(Roll());
                 return;
             }
@@ -98,7 +104,16 @@ public class MovePlayer : MonoBehaviour
 
 
         if (_horizontalInput != 0 || _verticalInput != 0)
+        {
+            moving = true;
             _isGrounded = Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _ground);
+
+        }
+        else
+        {
+            moving = false;
+
+        }
 
 
         if (Input.GetKey(KeyCode.LeftShift) && _horizontalInput != 0 || Input.GetKey(KeyCode.LeftShift) && _verticalInput != 0)
@@ -140,6 +155,7 @@ public class MovePlayer : MonoBehaviour
 
     private void Chrouching()
     {
+        crouch = true;
         _walkSpeed = 4;
 
         IsRunning = false;
@@ -147,6 +163,7 @@ public class MovePlayer : MonoBehaviour
     }
     private void UnChrouch()
     {
+        crouch = false;
         _walkSpeed = 9;
 
         _capsuleCollider.height = 2f;
@@ -158,32 +175,26 @@ public class MovePlayer : MonoBehaviour
 
     private IEnumerator Roll()
     {
-
-        _canRoll = false; // Не даем катиться снова, пока идет подкат
+        _canRoll = false;
         _isRolling = true;
 
-        _capsuleCollider.height = 1f; // Уменьшаем капсулу
+        _capsuleCollider.height = 1f;
 
-        // Направление движения во время подката
         _moveDirection = _orientation.forward;
 
-        float startTime = Time.time; // Запоминаем время начала подката
+        float startTime = Time.time;
 
-        // Применяем силу на протяжении всего времени подката
         while (Time.time - startTime < _rollDuration)
         {
-            Debug.Log("roll");
 
-            _rigidBody.AddForce(_rollSpeed  * _moveDirection, ForceMode.Force);
-            yield return null; // Ждем до следующего кадра
+            _rigidBody.AddForce(_rollSpeed * _moveDirection, ForceMode.Force);
+            yield return null;
         }
 
-        // Завершаем подкат, восстанавливаем капсулу
         _capsuleCollider.height = 2f;
 
         _isRolling = false;
-
-        // Восстановление возможности катиться
+        rolling = false;
         yield return new WaitForSeconds(_rollCooldown);
         _canRoll = true;
     }

@@ -40,7 +40,7 @@ public class Ak47Script : MonoBehaviour, IWeapon
 
     private bool running = false;
 
-    private string reloadAnim;
+    //private string reloadAnim;
 
     private bool _isAttackPressed;
     private bool _isAttacking;
@@ -59,14 +59,19 @@ public class Ak47Script : MonoBehaviour, IWeapon
 
         AnimationClip[] clips = _animator.runtimeAnimatorController.animationClips;
         IDLE = clips[0].name.ToString();
-        reloadAnim = clips[5].name.ToString();
+        //reloadAnim = clips[5].name.ToString();
     }
+
+    public static bool scope = false;
+
     private void Update()
     {
         if (_isReloading) return;
 
         if (_currentAmmo == 0 && _reserveAmmo > 0)
         {
+            _animator.SetBool("canScope", false);
+
             SwitchGun.CanSwitch = false;
 
             StartCoroutine(ReloadGun());
@@ -79,6 +84,18 @@ public class Ak47Script : MonoBehaviour, IWeapon
             ForceReload();
         }
 
+        if (Input.GetMouseButton(1))
+        {
+            scope = true;
+            _animator.SetBool("scope", true);
+        }
+        else
+        {
+            scope = false;
+
+            _animator.SetBool("scope", false);
+
+        }
 
 
 
@@ -124,7 +141,7 @@ public class Ak47Script : MonoBehaviour, IWeapon
     private IEnumerator ReloadGun()
     {
         akSound.PlayOneShot(_reloadSound, _reloadSoundVolume);
-        ChangeAnimationState(reloadAnim);
+        _animator.SetTrigger("reload");
 
         yield return new WaitForSeconds(2);
 
@@ -133,6 +150,8 @@ public class Ak47Script : MonoBehaviour, IWeapon
         _currentAmmo += amountToWithdraw;
 
         _isReloading = false;
+        _animator.SetBool("canScope", true);
+
         ChangeAnimationState(IDLE);
         SwitchGun.CanSwitch = true;
 
