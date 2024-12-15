@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/ZombieGameAssets/Scenes/Menu/Menu.unity
+    guid: 1078e66c8ef30074da4489f958a7d793
+  - enabled: 1
     path: Assets/ZombieGameAssets/Scenes/ArenaScene/ArenaScene.unity
     guid: ee440dcc534cb2d41a36c48b5e7728e0
   m_configObjects:
