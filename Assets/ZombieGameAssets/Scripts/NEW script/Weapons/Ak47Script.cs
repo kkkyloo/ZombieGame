@@ -30,6 +30,7 @@ public class Ak47Script : MonoBehaviour, IWeapon
 
     [Header("GameObjects")]
     [SerializeField] private GameObject _bulletHolePrefab;
+    [SerializeField] private GameObject _bulletHolePrefab2;
     [SerializeField] private GameObject _prefab;
     private GameObject _camera;
 
@@ -71,6 +72,7 @@ public class Ak47Script : MonoBehaviour, IWeapon
         if (_currentAmmo == 0 && _reserveAmmo > 0)
         {
             _animator.SetBool("canScope", false);
+            _animator.SetBool("scope", false);
 
             SwitchGun.CanSwitch = false;
 
@@ -239,6 +241,12 @@ public class Ak47Script : MonoBehaviour, IWeapon
         GameObject obj = Instantiate(_bulletHolePrefab, hit.point, Quaternion.LookRotation(hit.normal));
         obj.transform.position += obj.transform.forward / 1000;
         Destroy(obj, _bulletHoleDestrTime);
+
+        GameObject obj2 = Instantiate(_bulletHolePrefab2, hit.point, Quaternion.LookRotation(hit.normal));
+
+        Destroy(obj2, _bulletHoleDestrTime);
+
+
     }
     private void ChangeAnimationState(string newAnimation)
     {
