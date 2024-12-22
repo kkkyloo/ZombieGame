@@ -38,6 +38,7 @@ public class AiZombie : MonoBehaviour, IDamageable
     {
         Actions.GunShoot += HearGunShoot;
         Actions.OnMoveSound2 += HearFootSteps;
+        _playerTransform = Camera.main.transform;
     }
     private void OnDisable()
     {
@@ -132,7 +133,9 @@ public class AiZombie : MonoBehaviour, IDamageable
     }
     private IEnumerator SmoothSetDestonation()
     {
+        if (_hp <= 0) yield break;
         yield return new WaitForSeconds(1f);
+        if (_hp <= 0) yield break;
         _agent.SetDestination(_playerTransform.position);
     }
 
