@@ -11,12 +11,17 @@ public class SwitchGun : MonoBehaviour
     public static bool CanSwitch = true;
 
     private int _currentWeaponIndex = 0;
+    private int _prevIndex;
     private int _lastFirearmIndex = 0;
 
     private void Awake() => InitializeWeapons();
 
     private void InitializeWeapons()
     {
+        Heal.OnHeal += ChangeToPrev;
+
+
+
         Transform[] children = GetComponentsInChildren<Transform>(true);
 
         foreach (var child in children)
@@ -30,6 +35,21 @@ public class SwitchGun : MonoBehaviour
         SwitchWeapon(_currentWeaponIndex);
     }
 
+    private void OnDisable()
+    {
+        _weapons = null;
+        Heal.OnHeal -= ChangeToPrev;
+
+    }
+
+
+    private void ChangeToPrev()
+    {
+        SwitchWeapon(_prevIndex);
+    }
+
+
+
     private void Update()
     {
         if (!CanSwitch) return;
@@ -38,6 +58,8 @@ public class SwitchGun : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Alpha2)) SwitchWeapon(1);
         else if (Input.GetKeyDown(KeyCode.Alpha3)) SwitchWeapon(2);
         else if (Input.GetKeyDown(KeyCode.Alpha4)) SwitchWeapon(3);
+        else if (Input.GetKeyDown(KeyCode.Alpha5)) SwitchWeapon(4);
+
     }
 
     private void SwitchWeapon(int index)
@@ -50,6 +72,8 @@ public class SwitchGun : MonoBehaviour
         }
 
         UpdateHudElements(index);
+        _prevIndex = _currentWeaponIndex;
+
         _lastFirearmIndex = index;
         _currentWeaponIndex = index;
         CharacterWeapons.SelectedWeaponId = index;
