@@ -206,7 +206,6 @@ public class MovePlayer : MonoBehaviour
             {
                 if (hit.collider != null)
                 {
-                    Debug.Log("Obstacle hit during roll: " + hit.collider.name);
                     break;
                 }
             }
