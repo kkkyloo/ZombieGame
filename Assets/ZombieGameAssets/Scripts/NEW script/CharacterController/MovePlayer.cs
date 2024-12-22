@@ -70,84 +70,58 @@ public class MovePlayer : MonoBehaviour
 
     bool crouch = false;
 
+    private Coroutine coroutine;
+
     private void FixedUpdate()
     {
         SpeedControl();
+        MyInput();
 
         if (_isRolling)
         {
             IsRunning = false;
-
             return;
         }
-
-        if (Input.GetKey(KeyCode.LeftControl) && !_isRolling) Chrouching();
-        else UnChrouch();
-
-
 
         _horizontalInput = Input.GetAxisRaw("Horizontal");
         _verticalInput = Input.GetAxisRaw("Vertical");
 
-        if (Input.GetKeyDown(KeyCode.C) && !_isRolling && !crouch) //&& !Input.GetKey(KeyCode.LeftControl)
+        bool isMoving = _horizontalInput != 0 || _verticalInput != 0;
+        bool isShiftPressed = Input.GetKey(KeyCode.LeftShift);
+        bool isControlPressed = Input.GetKey(KeyCode.LeftControl);
+
+        if (isControlPressed && !_isRolling)
         {
-            if (_horizontalInput != 0 || _verticalInput != 0)
-            {
-                rolling = true;
-
-                _rigidBody.linearDamping = 0;
-                Debug.LogWarning("roll");
-                StartCoroutine(Roll());
-                return;
-            }
-        }
-
-
-        if (_horizontalInput != 0 || _verticalInput != 0)
-        {
-            moving = true;
-            _isGrounded = Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _ground);
-
+            Chrouching();
         }
         else
         {
-            moving = false;
-
+            UnChrouch();
         }
 
-
-        if (Input.GetKey(KeyCode.LeftShift) && _horizontalInput != 0 || Input.GetKey(KeyCode.LeftShift) && _verticalInput != 0)
+        if (Input.GetKeyDown(KeyCode.C) && !_isRolling && !crouch)
         {
-            if (!Input.GetKey(KeyCode.LeftControl))
-            {
-                IsRunning = true;
+            rolling = true;
+            _rigidBody.linearDamping = 0;
+            coroutine = StartCoroutine(Roll());
+            return;
+        }
 
-            }
-            else
-            {
-                IsRunning = false;
+        moving = isMoving;
+        _isGrounded = Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _ground);
 
-            }
+        if (isShiftPressed && isMoving && !isControlPressed)
+        {
+            IsRunning = true;
         }
         else
         {
             IsRunning = false;
         }
 
-
-
-
-
-
-
-
-
-
-        MyInput();
         SpeedControl();
 
-        if (_isGrounded) _rigidBody.linearDamping = _groundDrag;
-        else _rigidBody.linearDamping = 0;
+        _rigidBody.linearDamping = _isGrounded ? _groundDrag : 0;
 
         Move();
     }
@@ -170,7 +144,7 @@ public class MovePlayer : MonoBehaviour
     }
 
 
-
+    public float maxrollDuration = 15f;
 
 
     private IEnumerator Roll()
@@ -180,14 +154,63 @@ public class MovePlayer : MonoBehaviour
 
         _capsuleCollider.height = 1f;
 
-        _moveDirection = _orientation.forward;
+        if(_horizontalInput != 0 && _verticalInput == 0)
+        {
+            if(_horizontalInput > 0)
+            {
+                _moveDirection = _orientation.right;
+
+            }
+            else
+            {
+                _moveDirection = -_orientation.right;
+
+            }
+        }
+        else if(_horizontalInput == 0 && _verticalInput != 0)
+        {
+            if (_verticalInput > 0)
+            {
+                _moveDirection = _orientation.forward;
+
+            }
+            else
+            {
+                _moveDirection = -_orientation.forward;
+            }
+        }
+        else if(_horizontalInput == 0 && _verticalInput == 0)
+        {
+            _moveDirection = _orientation.forward;
+        }
+
+        var move = _moveDirection;
+
 
         float startTime = Time.time;
+        float startTime2 = Time.time;
 
-        while (Time.time - startTime < _rollDuration)
+        while (Time.time - startTime < _rollDuration && maxrollDuration > Time.time - startTime2)
         {
 
+            if (_isJumpPress)
+            {
+                startTime = Time.time;
+                _moveDirection = _orientation.forward;
+
+            }
+
             _rigidBody.AddForce(_rollSpeed * _moveDirection, ForceMode.Force);
+
+            if (Physics.Raycast(transform.position, _moveDirection, out RaycastHit hit, 1f))
+            {
+                if (hit.collider != null)
+                {
+                    Debug.Log("Obstacle hit during roll: " + hit.collider.name);
+                    break;
+                }
+            }
+
             yield return null;
         }
 
@@ -198,6 +221,7 @@ public class MovePlayer : MonoBehaviour
         yield return new WaitForSeconds(_rollCooldown);
         _canRoll = true;
     }
+
 
 
 
@@ -234,25 +258,31 @@ public class MovePlayer : MonoBehaviour
     }
     private void Move()
     {
-        _moveDirection = _orientation.forward * _verticalInput + _orientation.right * _horizontalInput;
+        _moveDirection = (_orientation.forward * _verticalInput + _orientation.right * _horizontalInput).normalized;
+
         if (OnSlope())
         {
-            _rigidBody.AddForce(_moveSpeed * 20f * GetSlopeMoveDirection(), ForceMode.Force);
+            Vector3 slopeDirection = GetSlopeMoveDirection();
+            _rigidBody.AddForce(_moveSpeed * 20f * slopeDirection, ForceMode.Force);
 
-            if (_rigidBody.linearVelocity.y > 0)
+            if (_rigidBody.linearVelocity.y > 0) 
+            {
                 _rigidBody.AddForce(Vector3.down * 80f, ForceMode.Force);
+            }
         }
-
-        if (_isGrounded)
+        else if (_isGrounded)
         {
-            _rigidBody.AddForce(_moveSpeed * 10f * _moveDirection.normalized, ForceMode.Force);
-            //   Actions.OnMove(_horizontalInput, _verticalInput);
+            _rigidBody.AddForce(_moveSpeed * 10f * _moveDirection, ForceMode.Force);
+        }
+        else
+        {
+            _rigidBody.AddForce(_airMultiplier * _moveSpeed * 10f * _moveDirection, ForceMode.Force);
         }
 
-        else if (!_isGrounded) _rigidBody.AddForce(_airMultiplier * _moveSpeed * 10f * _moveDirection.normalized, ForceMode.Force);
-
-        Actions.OnMoveSound(_horizontalInput, _verticalInput, _isGrounded);
-        Actions.OnMove(_horizontalInput, _verticalInput);
+   
+            Actions.OnMoveSound(_horizontalInput, _verticalInput, _isGrounded);
+            Actions.OnMove(_horizontalInput, _verticalInput);
+        
     }
     private void SpeedControl()
     {
@@ -278,10 +308,12 @@ public class MovePlayer : MonoBehaviour
     }
     private bool OnSlope()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out _slopeHit, _playerHeight * 0.5f + 0.3f))
+        if (_moveDirection.sqrMagnitude == 0) return false;
+
+        if (Physics.Raycast(transform.position, Vector3.down, out _slopeHit, _playerHeight * 0.5f + 0.3f, _ground))
         {
             float angle = Vector3.Angle(Vector3.up, _slopeHit.normal);
-            return angle < _maxSlopeAngle && angle != 0;
+            return angle < _maxSlopeAngle && angle > 0; 
         }
         return false;
     }
