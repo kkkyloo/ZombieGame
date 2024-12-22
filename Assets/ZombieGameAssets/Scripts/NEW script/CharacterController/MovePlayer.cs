@@ -153,39 +153,7 @@ public class MovePlayer : MonoBehaviour
         _isRolling = true;
 
         _capsuleCollider.height = 1f;
-
-        if(_horizontalInput != 0 && _verticalInput == 0)
-        {
-            if(_horizontalInput > 0)
-            {
-                _moveDirection = _orientation.right;
-
-            }
-            else
-            {
-                _moveDirection = -_orientation.right;
-
-            }
-        }
-        else if(_horizontalInput == 0 && _verticalInput != 0)
-        {
-            if (_verticalInput > 0)
-            {
-                _moveDirection = _orientation.forward;
-
-            }
-            else
-            {
-                _moveDirection = -_orientation.forward;
-            }
-        }
-        else if(_horizontalInput == 0 && _verticalInput == 0)
-        {
-            _moveDirection = _orientation.forward;
-        }
-
-        var move = _moveDirection;
-
+        _moveDirection = _orientation.forward;
 
         float startTime = Time.time;
         float startTime2 = Time.time;
