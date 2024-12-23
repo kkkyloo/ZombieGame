@@ -6,6 +6,7 @@ public class PauseMenu : MonoBehaviour
 
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject settingsMenu;
+    [SerializeField] private GameObject _canvas;
 
 
     public static bool GameIsPaused = false;
@@ -28,6 +29,8 @@ public class PauseMenu : MonoBehaviour
 
     public void Resume()
     {
+        _canvas.GetComponent<Canvas>().enabled = true;
+
         pauseMenu.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -37,6 +40,10 @@ public class PauseMenu : MonoBehaviour
 
     public void Pause()
     {
+        if(_canvas != null)
+        {
+            _canvas.GetComponent<Canvas>().enabled = false;
+        }
         pauseMenu.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -62,6 +69,7 @@ public class PauseMenu : MonoBehaviour
         settingsMenu.SetActive(false);
         pauseMenu.SetActive(true);
         SettingsISOpened = false;
+
     }
 
     public void ContinueGame()

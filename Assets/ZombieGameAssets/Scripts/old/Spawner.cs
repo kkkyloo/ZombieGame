@@ -14,14 +14,19 @@ public class Spawner : MonoBehaviour
         if (timeLeft < 60)
         {
             float[] arr = RandomOrg();
-            Instantiate(zombieType1, new Vector3(arr[0], -28f, arr[1]), Quaternion.identity);
+            var z = Instantiate(zombieType1, new Vector3(arr[0], -28f, arr[1]), Quaternion.identity);
+            z.GetComponent<AiZombie>()._canSeePlayer = true;
         }
         else if (timeLeft > 60 && timeLeft < 120)
         {
             float[] arr = RandomOrg();
-            Instantiate(zombieType1, new Vector3(arr[0], -28f, arr[1]), Quaternion.identity);
+            var z = Instantiate(zombieType1, new Vector3(arr[0], -28f, arr[1]), Quaternion.identity);
+            z.GetComponent<AiZombie>()._canSeePlayer = true;
+
             float[] arr2 = RandomOrg();
-            Instantiate(zombieType2, new Vector3(arr2[0], -28f, arr2[1]), Quaternion.identity);
+            z = Instantiate(zombieType2, new Vector3(arr2[0], -28f, arr2[1]), Quaternion.identity);
+            z.GetComponent<AiZombie>()._canSeePlayer = true;
+
             float[] arr3 = RandomOrg();
 
         }
@@ -30,16 +35,24 @@ public class Spawner : MonoBehaviour
             _spawnTime = 10;
 
             float[] arr3 = RandomOrg();
-            Instantiate(zombieType3, new Vector3(arr3[0], -28f, arr3[1]), Quaternion.identity);
+            var z = Instantiate(zombieType3, new Vector3(arr3[0], -28f, arr3[1]), Quaternion.identity);
+            z.GetComponent<AiZombie>()._canSeePlayer = true;
+
         }
         if (timeLeft > 180 && timeLeft < 500)
         {
             float[] arr = RandomOrg();
-            Instantiate(zombieType1, new Vector3(arr[0], -28f, arr[1]), Quaternion.identity);
+            var z = Instantiate(zombieType1, new Vector3(arr[0], -28f, arr[1]), Quaternion.identity);
+            z.GetComponent<AiZombie>()._canSeePlayer = true;
+
             float[] arr2 = RandomOrg();
-            Instantiate(zombieType2, new Vector3(arr2[0], -28f, arr2[1]), Quaternion.identity);
+            z = Instantiate(zombieType2, new Vector3(arr2[0], -28f, arr2[1]), Quaternion.identity);
+            z.GetComponent<AiZombie>()._canSeePlayer = true;
+
             float[] arr3 = RandomOrg();
-            Instantiate(zombieType3, new Vector3(arr3[0], -28f, arr3[1]), Quaternion.identity);
+            z = Instantiate(zombieType3, new Vector3(arr3[0], -28f, arr3[1]), Quaternion.identity);
+            z.GetComponent<AiZombie>()._canSeePlayer = true;
+
         }
         yield return new WaitForSeconds(_spawnTime);
         StartCoroutine(Spawn());

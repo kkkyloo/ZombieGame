@@ -14,9 +14,10 @@ public class AiZombie : MonoBehaviour, IDamageable
     [SerializeField] private float _angleView = 110f;
     [SerializeField] private float _firstAttackDelay = 0.5f;
     [SerializeField] private GameObject _arm;
+    [SerializeField] private Collider _armCollider;
 
     private float _distanceToPlayer;
-    private bool _canSeePlayer = false;
+    public bool _canSeePlayer = false;
     private bool _isFirstAttackDelay = false;
 
     private NavMeshAgent _agent;
@@ -39,6 +40,8 @@ public class AiZombie : MonoBehaviour, IDamageable
         Actions.GunShoot += HearGunShoot;
         Actions.OnMoveSound2 += HearFootSteps;
         _playerTransform = Camera.main.transform;
+        _armCollider = _arm.GetComponent<Collider>();
+        _armCollider.enabled = false;
     }
     private void OnDisable()
     {
@@ -54,8 +57,10 @@ public class AiZombie : MonoBehaviour, IDamageable
         _collider = GetComponent<Collider>();
         _audioSource.enabled = false;
     }
-    private void LateUpdate()
+    private void Update()
     {
+        if (_hp <= 0) return;
+
         if (!_canSeePlayer)
         {
             _agent.speed = 0;
@@ -108,12 +113,18 @@ public class AiZombie : MonoBehaviour, IDamageable
 
         if (_distanceToPlayer < _agent.stoppingDistance + _attackRangePlus)
         {
+
             UpdateRotationToPlayer();
             _audioSource.enabled = false;
             _agent.speed = 0f;
             StartCoroutine(ChangeAnimation(true));
         }
-        else StartCoroutine(ChangeAnimation(false));
+        else
+        {
+            _armCollider.enabled = false;
+
+            StartCoroutine(ChangeAnimation(false));
+        }
     }
     private void HearGunShoot()
     {
@@ -134,7 +145,7 @@ public class AiZombie : MonoBehaviour, IDamageable
     private IEnumerator SmoothSetDestonation()
     {
         if (_hp <= 0) yield break;
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.1f);
         if (_hp <= 0) yield break;
         _agent.SetDestination(_playerTransform.position);
     }
@@ -144,6 +155,9 @@ public class AiZombie : MonoBehaviour, IDamageable
     {
         yield return new WaitForSeconds(_changeAnimDelay);
         _animator.SetBool("Attack", state);
+        _armCollider.enabled = state;
+
+
     }
     public void TakeDamage(float damage)
     {
@@ -153,12 +167,17 @@ public class AiZombie : MonoBehaviour, IDamageable
             _canSeePlayer = true;
             _isFirstAttackDelay = true;
         }
-        else Die();
+        else
+        {
+            _hp = 0;
+            Die();
+        }
     }
     private void Die()
     {
+        _animator.SetTrigger("dead");
         _agent.enabled = false;
-        _animator.enabled = false;
+        _animator.SetFloat("Speed", 0f);
         _script.enabled = false;
         _collider.enabled = false;
         _audioSource.enabled = false;

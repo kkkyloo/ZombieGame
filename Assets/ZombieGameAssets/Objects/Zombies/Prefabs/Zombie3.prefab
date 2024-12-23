@@ -1683,7 +1683,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a623c7a24b918748ba53a5df0202ada, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hp: 100
+  _hp: 50
   _playerTransform: {fileID: 0}
   _playerMask:
     serializedVersion: 2
@@ -1697,9 +1697,11 @@ MonoBehaviour:
   _angleView: 120
   _firstAttackDelay: 0.5
   _arm: {fileID: 5122938620610664282}
+  _armCollider: {fileID: 0}
+  _canSeePlayer: 0
   _attackRangePlus: 0.5
-  _runSpeed: 5.5
-  _changeAnimDelay: 0.15
+  _runSpeed: 9
+  _changeAnimDelay: 0.5
 --- !u!195 &3680506941540400067
 NavMeshAgent:
   m_ObjectHideFlags: 0
