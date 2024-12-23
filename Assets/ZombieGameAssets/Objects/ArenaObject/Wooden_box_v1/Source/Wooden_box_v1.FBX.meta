@@ -111,3 +111,10 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 86679
+  packageName: RPG/FPS Game Assets for PC/Mobile (Industrial Set v2.0)
+  packageVersion: 
+  assetPath: Assets/ZombieGameAssets/Objects/ArenaObject/Wooden_box_v1/Source/Wooden_box_v1.FBX
+  uploadId: 0

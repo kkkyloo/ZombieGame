@@ -1290,8 +1290,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc85875a6f576cf41be54ed39a7452fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sfxVolumeSlider: {fileID: 2594273775643023207}
-  musicVolumeSlider: {fileID: 6130367110184897740}
   resolutionText: {fileID: 4116013936562310345}
   windowModeText: {fileID: 9196878293979136993}
 --- !u!1 &3971990688744880812
