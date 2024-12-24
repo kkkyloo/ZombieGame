@@ -545,6 +545,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 111883225}
   m_CullTransparentMesh: 1
+--- !u!1 &136759361 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5207731766527029938, guid: 204494a2fb92e3047954fd2019446fcc,
+    type: 3}
+  m_PrefabInstance: {fileID: 2079704371591629636}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &160355467
 GameObject:
   m_ObjectHideFlags: 0
@@ -1025,6 +1031,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 239067866}
   m_CullTransparentMesh: 1
+--- !u!1 &251649254 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8799361069409414271, guid: 204494a2fb92e3047954fd2019446fcc,
+    type: 3}
+  m_PrefabInstance: {fileID: 2079704371591629636}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &251649256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 251649254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04cef707cf0547f4fae46145d72290bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  heal: 50
+  count: 1
+  _obj: {fileID: 136759361}
 --- !u!1 &281207015
 GameObject:
   m_ObjectHideFlags: 0
@@ -8921,6 +8948,11 @@ PrefabInstance:
       propertyPath: _hpFillImage
       value: 
       objectReference: {fileID: 111309875}
+    - target: {fileID: 2112082397452821148, guid: 204494a2fb92e3047954fd2019446fcc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2943679720419963560, guid: 204494a2fb92e3047954fd2019446fcc,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -9001,10 +9033,19 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 8799361069409414271, guid: 204494a2fb92e3047954fd2019446fcc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8799361069409414271, guid: 204494a2fb92e3047954fd2019446fcc,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 251649256}
   m_SourcePrefab: {fileID: 100100000, guid: 204494a2fb92e3047954fd2019446fcc, type: 3}
 --- !u!23 &2093287237998725647
 MeshRenderer:
