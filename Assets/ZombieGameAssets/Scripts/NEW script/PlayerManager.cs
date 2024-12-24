@@ -1,30 +1,65 @@
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class PlayerManager : MonoBehaviour, IDamageable
 {
-    [SerializeField] private float _hp = 100;
+    [Header("Настройки здоровья")]
+    [SerializeField] private float _hp = 100f;
+    [SerializeField] private float _maxHp = 100f;
+
+    [Header("Ссылки на UI-элементы для HP")]
+    [SerializeField] private Image _hpFillImage;      
+    [SerializeField] private TextMeshProUGUI _hpText; 
 
     private void OnEnable()
     {
         Actions.GetEnemyHit += TakeDamage;
     }
+    private void Start()
+    {
+        UpdateHPUI();
+    }
     private void OnDisable()
     {
         Actions.GetEnemyHit -= TakeDamage;
     }
+
+
     public void TakeDamage(float damage)
     {
-        if (_hp - damage > 0) _hp -= damage;
-        else Die();
+        _hp -= damage;
+        if (_hp <= 0f)
+        {
+            _hp = 0f;
+            Die();
+        }
+        
+        UpdateHPUI();
     }
+
+
     public void TakeHeal(float heal)
     {
-        if (_hp + heal > 100) _hp = 100;
-        else _hp += heal;
+        _hp += heal;
+        if (_hp > _maxHp) 
+            _hp = _maxHp;
+
+        UpdateHPUI();
+    }
+
+
+    private void UpdateHPUI()
+    {
+        if (_hpFillImage != null)
+            _hpFillImage.fillAmount = _hp / _maxHp;
+
+        if (_hpText != null)
+            _hpText.text = Mathf.RoundToInt(_hp).ToString();
     }
 
     private void Die()
     {
-        Debug.Log("Die");
+        Debug.Log("Player is Dead!");
     }
 }
