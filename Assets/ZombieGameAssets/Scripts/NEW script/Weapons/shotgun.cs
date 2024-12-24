@@ -1,13 +1,14 @@
 using System.Collections;
 using UnityEngine;
+
 public class Shootgun : MonoBehaviour, IWeapon
 {
     [Header("Gun Settings")]
     [SerializeField] private float damage = 51f;
     [SerializeField] private float attackDelay = 0.45f;
-    [SerializeField] private float range = 40; // ��� ������, ��� ������ ����� (����� ������� �����������)
-    [SerializeField] private int MaxAmmo = 12;
-    [SerializeField] private int _currentAmmo = 4;
+    [SerializeField] private float range = 40; 
+    [SerializeField] private int MaxAmmo = 12;      // общее кол-во патронов (резерв)
+    [SerializeField] private int _currentAmmo = 4;  // патронов в магазине
 
     [Header("Audio")]
     [SerializeField] private AudioClip impact;
@@ -23,7 +24,6 @@ public class Shootgun : MonoBehaviour, IWeapon
     [Header("GameObjects")]
     [SerializeField] private GameObject _bulletHolePrefab;
     [SerializeField] private GameObject _prefab;
-
     private GameObject fpsCam;
 
     [Header("Animation")]
@@ -39,7 +39,9 @@ public class Shootgun : MonoBehaviour, IWeapon
 
     private float bulletHoleDestroyTime = 4f;
 
-    private void OnEnable() => ChangeAnimationState(IDLE);
+    private void OnEnable() 
+        => ChangeAnimationState(IDLE);
+
     private void Awake()
     {
         akSound = GetComponent<AudioSource>();
@@ -47,21 +49,22 @@ public class Shootgun : MonoBehaviour, IWeapon
         fpsCam = GameObject.FindWithTag("MainCamera");
 
         AnimationClip[] clips = _animator.runtimeAnimatorController.animationClips;
-        IDLE = clips[0].name.ToString();
-        FIRE = clips[3].name.ToString();
-        reloadAnim = clips[4].name.ToString();
+        IDLE = clips[0].name;
+        FIRE = clips[3].name;
+        reloadAnim = clips[4].name;
     }
+
     private void Update()
     {
         if (isReloading) return;
 
+        // Если в магазине кончились патроны, но ещё есть в запасе (MaxAmmo), перезаряжаемся
         if (_currentAmmo == 0 && MaxAmmo > 0)
         {
             StartCoroutine(ReloadGun());
             isReloading = true;
             return;
         }
-
     }
 
     public void Attack()
@@ -77,6 +80,7 @@ public class Shootgun : MonoBehaviour, IWeapon
         if (_isAttackPressed) HandleAttack();
         else if (!isAttacking && !isReloading) ChangeAnimationState(IDLE);
     }
+
     private IEnumerator ReloadGun()
     {
         akSound.PlayOneShot(reload, reloadSoundVolume);
@@ -84,13 +88,18 @@ public class Shootgun : MonoBehaviour, IWeapon
 
         yield return new WaitForSeconds(2);
 
+        // Логика пополнения патронов
         int amountToWithdraw = Mathf.Min(30 - _currentAmmo, MaxAmmo);
         MaxAmmo -= amountToWithdraw;
         _currentAmmo += amountToWithdraw;
 
+        // После изменения патронов, обновляем HUD
+        SwitchGun.Instance.SetAmmoText(_currentAmmo, MaxAmmo);
+
         isReloading = false;
         ChangeAnimationState(IDLE);
     }
+
     private void ReloadDown()
     {
         if (MaxAmmo > 0 && GameObject.Find("axeArms") == null)
@@ -99,6 +108,7 @@ public class Shootgun : MonoBehaviour, IWeapon
             isReloading = true;
         }
     }
+
     private void HandleAttack()
     {
         SwitchGun.CanSwitch = false;
@@ -112,38 +122,40 @@ public class Shootgun : MonoBehaviour, IWeapon
         {
             isAttacking = true;
             Invoke(nameof(AttackComplete), attackDelay);
+
             akSound.PlayOneShot(impact, reloadSoundVolume);
 
-            //AudioSource.PlayClipAtPoint(impact, new Vector3(5, 1, 2));
-
+            // Уменьшаем патрон
             _currentAmmo--;
 
+            // Обновляем HUD 
+            SwitchGun.Instance.SetAmmoText(_currentAmmo, MaxAmmo);
+
+            // Луч стрельбы
             if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out RaycastHit hit, range))
             {
                 HandleHitResult(hit);
             }
 
             SwitchGun.CanSwitch = true;
-
         }
     }
+
     private void PlayAttackAnimation()
     {
         flash.Play();
         ChangeAnimationState(FIRE);
     }
+
     private void HandleHitResult(RaycastHit hit)
     {
-    //    if (hit.transform.TryGetComponent<Targets>(out var targets))
-    //    {
-    //        run.speed = 4;
-            //targets.TakeDamage(damage);
-   //         targets.TakeDamage(GetDamageByRange(hit.distance));
+        // В вашем коде логика с Targets/Enemies закомментирована. 
+        // Если нужно - раскомментируйте и реализуйте.
+        // Иначе просто создаём пулевые отметины:
 
-   //         Destroy(Instantiate(_prefab, hit.point, Quaternion.identity), 0.5f);
-    //    }
-    //    else CreateBulletHole(hit);
+        //CreateBulletHole(hit);
     }
+
     private void CreateBulletHole(RaycastHit hit)
     {
         GameObject obj = Instantiate(_bulletHolePrefab, hit.point, Quaternion.LookRotation(hit.normal));
@@ -154,15 +166,15 @@ public class Shootgun : MonoBehaviour, IWeapon
     private void ChangeAnimationState(string newAnimation)
     {
         if (currentAnimation == newAnimation) return;
-
         _animator.Play(newAnimation);
         currentAnimation = newAnimation;
     }
-    private void AttackComplete() // � ���������� �� eange ����
+
+    private void AttackComplete()
     {
         isAttacking = false;
-    //    run.speed = 6;
     }
+
     private float GetDamageByRange(float distance)
     {
         if (distance <= 5)

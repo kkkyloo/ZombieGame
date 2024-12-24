@@ -6,9 +6,9 @@ public class Ak47Script : MonoBehaviour, IWeapon
     [Header("Gun Settings")]
     [SerializeField] private float _damage = 15;
     [SerializeField] private float _attackDelay = 0.11f;
-    [SerializeField] private float _attackRange = 20; // ��� ������, ��� ������ ����� (����� ������� �����������)
-    [SerializeField] private int _reserveAmmo = 60;
-    [SerializeField] private int _currentAmmo = 30;
+    [SerializeField] private float _attackRange = 20; 
+    [SerializeField] private int _reserveAmmo = 60; // общий запас патронов
+    [SerializeField] private int _currentAmmo = 30; // патронов в магазине
 
     [Header("Audio")]
     [SerializeField] private AudioClip _shootSound;
@@ -20,6 +20,7 @@ public class Ak47Script : MonoBehaviour, IWeapon
     [SerializeField] private float _noAmmoSoundVolume = 1f;
     [SerializeField] private float _changeGunSoundVolume = 1f;
     private AudioSource akSound;
+
     [SerializeField] private AudioClip[] _enemyHitSounds;
     [SerializeField] private float _enemyHitSoundVolume = 0.1f;
     private int _enemyHitSoundIndex = 0;
@@ -41,8 +42,6 @@ public class Ak47Script : MonoBehaviour, IWeapon
 
     private bool running = false;
 
-    //private string reloadAnim;
-
     private bool _isAttackPressed;
     private bool _isAttacking;
     private bool _isReloading = false;
@@ -52,6 +51,7 @@ public class Ak47Script : MonoBehaviour, IWeapon
         ChangeAnimationState(IDLE);
         akSound.PlayOneShot(_changeGunSound, _changeGunSoundVolume);
     }
+
     private void Awake()
     {
         akSound = GetComponent<AudioSource>();
@@ -59,8 +59,7 @@ public class Ak47Script : MonoBehaviour, IWeapon
         _camera = GameObject.FindWithTag("MainCamera");
 
         AnimationClip[] clips = _animator.runtimeAnimatorController.animationClips;
-        IDLE = clips[0].name.ToString();
-        //reloadAnim = clips[5].name.ToString();
+        IDLE = clips[0].name;
     }
 
     public static bool scope = false;
@@ -69,6 +68,7 @@ public class Ak47Script : MonoBehaviour, IWeapon
     {
         if (_isReloading) return;
 
+        // Если магазин пуст, но запас (_reserveAmmo) > 0, автоперезарядка
         if (_currentAmmo == 0 && _reserveAmmo > 0)
         {
             _animator.SetBool("canScope", false);
@@ -81,11 +81,13 @@ public class Ak47Script : MonoBehaviour, IWeapon
             return;
         }
 
+        // Принудительная перезарядка
         if (Input.GetKey(KeyCode.R))
         {
             ForceReload();
         }
 
+        // Прицеливание (ПКМ)
         if (Input.GetMouseButton(1))
         {
             scope = true;
@@ -94,32 +96,29 @@ public class Ak47Script : MonoBehaviour, IWeapon
         else
         {
             scope = false;
-
             _animator.SetBool("scope", false);
-
         }
 
-
-
+        // Бег
         if (MovePlayer.IsRunning && !_isAttackPressed)
         {
             _animator.SetBool("canFire", false);
-
             _animator.SetBool("canRun", true);
             running = true;
         }
         else
         {
             _animator.SetBool("canRun", false);
+            running = false;
         }
-
     }
+
     private void FixedUpdate()
     {
         if (_isAttackPressed) HandleAttack();
-        else if (!_isAttacking && !_isReloading && !running) ChangeAnimationState(IDLE);
+        else if (!_isAttacking && !_isReloading && !running) 
+            ChangeAnimationState(IDLE);
     }
-
 
     public void Attack()
     {
@@ -129,16 +128,12 @@ public class Ak47Script : MonoBehaviour, IWeapon
         {
             _isAttackPressed = true;
             _animator.SetBool("canFire", true);
-
-
         }
-        else if (Input.GetButtonDown("Fire1") && _reserveAmmo == 0 && _currentAmmo == 0) akSound.PlayOneShot(_noAmmoSound, _noAmmoSoundVolume);
-
-
+        else if (Input.GetButtonDown("Fire1") && _reserveAmmo == 0 && _currentAmmo == 0)
+        {
+            akSound.PlayOneShot(_noAmmoSound, _noAmmoSoundVolume);
+        }
     }
-
-
-
 
     private IEnumerator ReloadGun()
     {
@@ -147,20 +142,24 @@ public class Ak47Script : MonoBehaviour, IWeapon
 
         yield return new WaitForSeconds(2);
 
+        // Подсчёт, сколько нужно положить в магазин
         int amountToWithdraw = Mathf.Min(30 - _currentAmmo, _reserveAmmo);
         _reserveAmmo -= amountToWithdraw;
         _currentAmmo += amountToWithdraw;
+
+        // Обновляем HUD 
+        SwitchGun.Instance.SetAmmoText(_currentAmmo, _reserveAmmo);
 
         _isReloading = false;
         _animator.SetBool("canScope", true);
 
         ChangeAnimationState(IDLE);
         SwitchGun.CanSwitch = true;
-
     }
+
     private void ReloadDown()
     {
-        if (_reserveAmmo > 0) //  && GameObject.Find("axeArms") == null
+        if (_reserveAmmo > 0)
         {
             StartCoroutine(ReloadGun());
             _isReloading = true;
@@ -169,13 +168,13 @@ public class Ak47Script : MonoBehaviour, IWeapon
 
     public void ForceReload()
     {
+        // Если ещё не идёт перезарядка и есть патроны в резерве, а магазин не полон
         if (!_isReloading && _reserveAmmo > 0 && _currentAmmo < 30)
         {
             StartCoroutine(ReloadGun());
             _isReloading = true;
         }
     }
-
 
     private void HandleAttack()
     {
@@ -188,13 +187,17 @@ public class Ak47Script : MonoBehaviour, IWeapon
         {
             _isAttacking = true;
             Invoke(nameof(AttackComplete), _attackDelay);
+
             akSound.PlayOneShot(_shootSound, _shootSoundVolume);
             akSound.pitch = Random.Range(1f, 1.1f);
 
-            //AudioSource.PlayClipAtPoint(_shootSound, new Vector3(2, 2, 2));
-
+            // Минус один патрон
             _currentAmmo--;
 
+            // Обновляем HUD
+            SwitchGun.Instance.SetAmmoText(_currentAmmo, _reserveAmmo);
+
+            // Луч стрельбы
             if (Physics.Raycast(_camera.transform.position, _camera.transform.forward, out RaycastHit hit, _attackRange))
             {
                 HandleHitResult(hit);
@@ -202,33 +205,38 @@ public class Ak47Script : MonoBehaviour, IWeapon
         }
 
         SwitchGun.CanSwitch = true;
-
     }
+
     private void PlayAttackAnimation()
     {
         _particleFlash.Play();
-
         _animator.SetTrigger("fire");
-
-        //ChangeAnimationState(FIRE);
     }
+
     private void HandleHitResult(RaycastHit hit)
     {
+        // Логика попадания: зомби, объекты и т.д.
+
         if (hit.transform.TryGetComponent<AiZombie>(out var targets) && targets.enabled)
         {
             targets.TakeDamage(GetDamageByRange(hit.distance));
 
-            // akSound.PlayOneShot(_enemyHitSounds[ChangeHitSound()], _enemyHitSoundVolume);
-            AudioSource.PlayClipAtPoint(_enemyHitSounds[ChangeHitSound()], hit.transform.position, _enemyHitSoundVolume);
+            // Проигрываем звук попадания
+            AudioSource.PlayClipAtPoint(_enemyHitSounds[ChangeHitSound()], 
+                                        hit.transform.position, 
+                                        _enemyHitSoundVolume);
 
-            // Actions.OnHitEnemy(GetDamageByRange(hit.distance), hit.collider.gameObject);
             Destroy(Instantiate(_prefab, hit.point, Quaternion.identity), 0.5f);
         }
-        else if (!hit.transform.CompareTag("Enemy")) CreateBulletHole(hit);
+        else if (!hit.transform.CompareTag("Enemy"))
+        {
+            CreateBulletHole(hit);
+        }
     }
+
     private int ChangeHitSound()
     {
-        _enemyHitSoundIndex += 1;
+        _enemyHitSoundIndex++;
         if (_enemyHitSoundIndex == _enemyHitSounds.Length)
         {
             _enemyHitSoundIndex = 0;
@@ -236,6 +244,7 @@ public class Ak47Script : MonoBehaviour, IWeapon
         }
         return _enemyHitSoundIndex;
     }
+
     private void CreateBulletHole(RaycastHit hit)
     {
         GameObject obj = Instantiate(_bulletHolePrefab, hit.point, Quaternion.LookRotation(hit.normal));
@@ -243,23 +252,21 @@ public class Ak47Script : MonoBehaviour, IWeapon
         Destroy(obj, _bulletHoleDestrTime);
 
         GameObject obj2 = Instantiate(_bulletHolePrefab2, hit.point, Quaternion.LookRotation(hit.normal));
-
         Destroy(obj2, _bulletHoleDestrTime);
-
-
     }
+
     private void ChangeAnimationState(string newAnimation)
     {
         if (_currentAnimation == newAnimation) return;
-
         _animator.Play(newAnimation);
         _currentAnimation = newAnimation;
     }
-    private void AttackComplete() // � ���������� �� eange ����
+
+    private void AttackComplete()
     {
         _isAttacking = false;
-        //      run.speed = 6;
     }
+
     private float GetDamageByRange(float distance)
     {
         if (distance <= 5)
