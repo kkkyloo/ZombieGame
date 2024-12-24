@@ -7001,6 +7001,7 @@ MonoBehaviour:
   _bulletHoleDestrTime: 3
   _bulletHolePrefab: {fileID: 1192542227713609518, guid: b5029c4ef0b690b479fece7173c6fb26,
     type: 3}
+  _bulletHolePrefab2: {fileID: 0}
   _prefab: {fileID: 7109919715369664343, guid: b5d85d54dcaa43944aeaf3a674296fe5, type: 3}
 --- !u!95 &7372094045410175180
 Animator:
@@ -7819,6 +7820,7 @@ MonoBehaviour:
   _bulletHoleDestrTime: 3
   _bulletHolePrefab: {fileID: 1192542227713609518, guid: b5029c4ef0b690b479fece7173c6fb26,
     type: 3}
+  _bulletHolePrefab2: {fileID: 100002, guid: 56bfc2f4b4a0c534c8ef3d0fd1124c44, type: 3}
   _prefab: {fileID: 7109919715369664343, guid: b5d85d54dcaa43944aeaf3a674296fe5, type: 3}
 --- !u!95 &2753479973754544449
 Animator:
@@ -11674,7 +11676,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1877572457451863004
 Transform:
   m_ObjectHideFlags: 0
@@ -24629,6 +24631,7 @@ MonoBehaviour:
   _rollDuration: 1.2
   _rollCooldown: 0.8
   _capsuleCollider: {fileID: 5634786113804905798}
+  maxrollDuration: 15
 --- !u!114 &1255357243349011660
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -3690,7 +3690,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53a87586595abc7438fb45276457b01f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spawnTime: 5
+  _spawnTime: 1
   zombieType1: {fileID: 7611554779965751666, guid: 999ed6de3fba3e2448f92655d1c59356,
     type: 3}
   zombieType2: {fileID: 7611554779965751666, guid: 999ed6de3fba3e2448f92655d1c59356,
@@ -8396,10 +8396,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5024176748581210112, guid: 204494a2fb92e3047954fd2019446fcc,
+    - target: {fileID: 3033436122563339526, guid: 204494a2fb92e3047954fd2019446fcc,
         type: 3}
-      propertyPath: m_IsActive
-      value: 0
+      propertyPath: _damage
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 6664397934511466434, guid: 204494a2fb92e3047954fd2019446fcc,
         type: 3}
