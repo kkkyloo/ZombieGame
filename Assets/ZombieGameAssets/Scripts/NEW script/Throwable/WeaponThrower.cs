@@ -55,8 +55,20 @@ public class WeaponThrower : MonoBehaviour, IWeapon
 
     private void ThrowObject()
     {
+        GameObject weapon;
 
-        GameObject weapon = Instantiate(_throwableObject, transform);
+        if (_throwableObject.name == "bayonet")
+        {
+            weapon = Instantiate(_throwableObject, transform);
+
+        }
+        else
+        {
+            weapon = Instantiate(_throwableObject, transform.position, Quaternion.identity);
+
+        }
+
+
         Rigidbody rb = weapon.GetComponent<Rigidbody>();
 
         WeaponThrowType weaponThrowType = weapon.GetComponent<WeaponThrowType>();
