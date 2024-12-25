@@ -26,13 +26,13 @@ public class ThrowingWeaponOnGround : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter()
+    private void OnTriggerEnter()
     {
         canTake = true;
         Debug.Log("You can take ThrowingWeapon");
     }
 
-    private void OnCollisionExit()
+    private void OnTriggerExit()
     {
         canTake = false;
         Debug.Log("You can NOT take ThrowingWeapon");
