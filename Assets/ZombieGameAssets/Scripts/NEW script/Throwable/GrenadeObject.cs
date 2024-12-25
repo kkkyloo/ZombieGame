@@ -13,7 +13,22 @@ public class GrenadeObject : MonoBehaviour
     [Header("Game Objects")]
     [SerializeField] private GameObject _explosionPrefab;
 
+    private Rigidbody rb;
+
     private bool _hasExploded = false;
+
+    public void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
+    void FixedUpdate()
+    {
+        if (rb.linearVelocity.magnitude > 0.1f)
+        {
+            rb.linearVelocity *= 0.98f;
+        }
+    }
 
     private void Update()
     {

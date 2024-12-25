@@ -12,6 +12,9 @@ public class WeaponThrower : MonoBehaviour, IWeapon
     [SerializeField] private GameObject _throwableObject;
     [SerializeField] private Transform _cameraTransform;
 
+    [SerializeField] private GameObject _knifeObject;
+    [SerializeField] private GameObject _grenadeObject;
+
     private bool canThrow = true;
 
     private void OnEnable()
@@ -37,6 +40,14 @@ public class WeaponThrower : MonoBehaviour, IWeapon
     private IEnumerator StartThrow()
     {
         _currentAmmo--;
+        if (_currentAmmo == 0 && _throwableObject.name == "bayonet")
+        {
+            _knifeObject.SetActive(false);
+        }
+        else if (_currentAmmo == 0 && _throwableObject.name == "grenade")
+        {
+            _grenadeObject.SetActive(false);
+        }
         ThrowObject();
         yield return new WaitForSeconds(_throwDelay);
         canThrow = true;
@@ -67,7 +78,7 @@ public class WeaponThrower : MonoBehaviour, IWeapon
         }
         else
         {
-            _throwForce = 5f;
+            _throwForce = 20f;
         }
 
         rb.isKinematic = false;
