@@ -150,6 +150,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _prefab: {fileID: 979249271759001870, guid: 333639dc772deee44997f53e18085bee, type: 3}
+  _knifeObject: {fileID: 0}
+  _grenadeObject: {fileID: 0}
 --- !u!135 &8147041993148237657
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -169,7 +171,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 10
+  m_Radius: 20
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!64 &4269185783521923569
 MeshCollider:
