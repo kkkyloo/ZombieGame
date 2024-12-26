@@ -149,11 +149,17 @@ public class Shootgun : MonoBehaviour, IWeapon
 
     private void HandleHitResult(RaycastHit hit)
     {
-        // В вашем коде логика с Targets/Enemies закомментирована. 
-        // Если нужно - раскомментируйте и реализуйте.
-        // Иначе просто создаём пулевые отметины:
+        if (hit.transform.TryGetComponent<AiZombie>(out var targets) && targets.enabled)
+        {
+            targets.TakeDamage(GetDamageByRange(hit.distance));
 
-        //CreateBulletHole(hit);
+
+            Destroy(Instantiate(_prefab, hit.point, Quaternion.identity), 0.5f);
+        }
+        else if (!hit.transform.CompareTag("Enemy"))
+        {
+            CreateBulletHole(hit);
+        }
     }
 
     private void CreateBulletHole(RaycastHit hit)
